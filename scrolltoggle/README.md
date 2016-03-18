@@ -41,13 +41,14 @@ Example
 
 ```javascript
 scrolltoggle.init({
-  className: 'scrollr'
+  querySelector: 'header.mobile-slider'
 });
 ```
 
 Option | Default | Description
 ------ | ------- | -----------
-className | "ak-scrolltoggle" | The CSS class name for all elements that this module will toggle on scroll.
-upClassName | "ak-scrolltoggle--up" | The CSS class name to apply when the user scrolls up.
-downClassName | "ak-scrolltoggle--down" | The CSS class name to apply when the user scrolls down.
+querySelector | ".ak-scrolltoggle" | The CSS query selector for all elements that this module will toggle on scroll.
+upClassName | "ak-scrolltoggle--up" | If provided, the CSS class name to apply when the user scrolls up.
+downClassName | "ak-scrolltoggle--down" | If provided, the CSS class name to apply when the user scrolls down.
+topClassName | null | If provided, the CSS class name to apply when the user scrolls to the very top of the page.
 offset | 5 | The offset, in px, to use before toggling the element.

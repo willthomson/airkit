@@ -1,9 +1,10 @@
 var scrolled = false;
 var objs = [];
 var defaultConfig = {
-  className: 'ak-scrolltoggle',
+  querySelector: '.ak-scrolltoggle',
   upClassName: 'ak-scrolltoggle--up',
   downClassName: 'ak-scrolltoggle--down',
+  topClassName: null,
   offset: 5
 };
 
@@ -32,12 +33,19 @@ ScrollToggle.prototype.onScroll = function() {
     return;
   }
 
-  if (scrollPos > this.lastScrollPos_) {
+  if (scrollPos == 0 && this.config_.topClassName) {
+    // Top of page.
+    this.el_.classList.remove(this.config_.upClassName);
+    this.el_.classList.remove(this.config_.downClassName);
+    this.el_.classList.add(this.config_.topClassName);
+  } else if (scrollPos > this.lastScrollPos_) {
     // Scrolled down.
+    this.el_.classList.remove(this.config_.topClassName);
     this.el_.classList.remove(this.config_.upClassName);
     this.el_.classList.add(this.config_.downClassName);
   } else {
     // Scrolled up.
+    this.el_.classList.remove(this.config_.topClassName);
     this.el_.classList.remove(this.config_.downClassName);
     this.el_.classList.add(this.config_.upClassName);
   }
@@ -53,7 +61,7 @@ ScrollToggle.prototype.onScroll = function() {
 function init(opt_config) {
   var config = cloneAndMerge(defaultConfig, opt_config || {});
 
-  var els = document.getElementsByClassName(config.className);
+  var els = document.querySelectorAll(config.querySelector);
   for (var i = 0, el; el = els[i]; i++) {
     var obj = new ScrollToggle(el, config);
     objs.push(obj);
