@@ -1,0 +1,15 @@
+{
+  "name": "airkit",
+  "version": "0.0.1",
+  "description": "Open-source JS modules",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grow/airkit.git"
+  },
+  "author": "code@grow.io",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/grow/airkit/issues"
+  },
+  "homepage": "https://github.com/grow/airkit"
+}
