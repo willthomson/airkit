@@ -31,12 +31,12 @@ function ScrollToggle(el, config) {
  * Callback for scroll events.
  */
 ScrollToggle.prototype.onScroll = function() {
-  var scrollPos = document.body.scrollTop;
+  var scrollPos = getScrollPos();
   if (Math.abs(this.lastScrollPos_ - scrollPos) < this.config_.offset) {
     return;
   }
 
-  if (scrollPos == 0 && this.config_.topClassName) {
+  if (scrollPos <= 0 && this.config_.topClassName) {
     // Top of page.
     this.el_.classList.remove(this.config_.upClassName);
     this.el_.classList.remove(this.config_.downClassName);
@@ -54,6 +54,17 @@ ScrollToggle.prototype.onScroll = function() {
   }
   this.lastScrollPos_ = scrollPos;
 };
+
+
+/**
+ * Returns the current scroll position.
+ */
+function getScrollPos() {
+  if (window.pageYOffset !== undefined) {
+    return window.pageYOffset;
+  }
+  return document.documentElement.scrollTop;
+}
 
 
 /**
