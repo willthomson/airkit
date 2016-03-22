@@ -21,6 +21,9 @@ function ScrollToggle(el, config) {
   // TODO(stevenle): support config overrides per element using a data- attr.
   this.config_ = config;
   this.lastScrollPos_ = 0;
+
+  // Initialize the current scroll position.
+  this.onScroll();
 }
 
 
