@@ -1,3 +1,8 @@
+/**
+ * @fileoverview The scrolldelgator module delegates scroll events to registered
+ * delegates, using a timed interval to debounce events.
+ */
+
 var delegates = [];
 var interval = null;
 var scrolled = false;

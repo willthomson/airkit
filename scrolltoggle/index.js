@@ -1,3 +1,8 @@
+/**
+ * @fileoverview The scrolltoggle module updates classes on elements based on
+ * scroll direction and position.
+ */
+
 var classes = require('../utils/classes');
 var objects = require('../utils/objects');
 var scrolldelegator = require('../scrolldelegator');
