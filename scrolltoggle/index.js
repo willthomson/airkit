@@ -25,8 +25,8 @@ function ScrollToggle(el, config) {
   this.el_ = el;
 
   this.config_ = objects.clone(config);
-  if (this.el_.hasAttribute('data-scrolltoggle')) {
-    var elConfig = JSON.parse(this.el_.getAttribute('data-scrolltoggle'));
+  if (this.el_.hasAttribute('data-ak-scrolltoggle')) {
+    var elConfig = JSON.parse(this.el_.getAttribute('data-ak-scrolltoggle'));
     if (elConfig && typeof elConfig === 'object') {
       objects.merge(this.config_, elConfig);
     }
