@@ -7,7 +7,7 @@ The scrolltoggle module listens for scroll events and updates elements that are 
 JS
 
 ```javascript
-var scrolltoggle = require('./airkit/scrolltoggle');
+var scrolltoggle = require('airkit/scrolltoggle');
 scrolltoggle.init();
 ```
 

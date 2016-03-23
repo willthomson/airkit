@@ -1,3 +1,8 @@
+var classes = require('../utils/classes');
+var objects = require('../utils/objects');
+var scrolldelegator = require('../utils/scrolldelegator');
+
+
 var scrolled = false;
 var objs = [];
 var defaultConfig = {
@@ -18,11 +23,17 @@ var defaultConfig = {
  */
 function ScrollToggle(el, config) {
   this.el_ = el;
-  // TODO(stevenle): support config overrides per element using a data- attr.
-  this.config_ = config;
-  this.lastScrollPos_ = 0;
+
+  this.config_ = objects.clone(config);
+  if (this.el_.hasAttribute('data-scrolltoggle')) {
+    var elConfig = JSON.parse(this.el_.getAttribute('data-scrolltoggle'));
+    if (elConfig && typeof elConfig === 'object') {
+      objects.merge(this.config_, elConfig);
+    }
+  }
 
   // Initialize the current scroll position.
+  this.lastScrollPos_ = 0;
   this.onScroll();
 }
 
@@ -31,40 +42,30 @@ function ScrollToggle(el, config) {
  * Callback for scroll events.
  */
 ScrollToggle.prototype.onScroll = function() {
-  var scrollPos = getScrollPos();
+  var scrollPos = scrolldelegator.getScrollPosY();
   if (Math.abs(this.lastScrollPos_ - scrollPos) < this.config_.offset) {
     return;
   }
 
-  if (scrollPos <= 0 && this.config_.topClassName) {
+  if (this.config_.topClassName && scrollPos <= this.config_.offset) {
     // Top of page.
-    this.el_.classList.remove(this.config_.upClassName);
-    this.el_.classList.remove(this.config_.downClassName);
-    this.el_.classList.add(this.config_.topClassName);
+    classes.removeAdd(this.el_,
+        [this.config_.upClassName, this.config_.downClassName],
+        [this.config_.topClassName]);
   } else if (scrollPos > this.lastScrollPos_) {
     // Scrolled down.
-    this.el_.classList.remove(this.config_.topClassName);
-    this.el_.classList.remove(this.config_.upClassName);
-    this.el_.classList.add(this.config_.downClassName);
+    classes.removeAdd(this.el_,
+        [this.config_.topClassName, this.config_.upClassName],
+        [this.config_.downClassName]);
   } else {
     // Scrolled up.
-    this.el_.classList.remove(this.config_.topClassName);
-    this.el_.classList.remove(this.config_.downClassName);
-    this.el_.classList.add(this.config_.upClassName);
+    classes.removeAdd(this.el_,
+        [this.config_.topClassName, this.config_.downClassName],
+        [this.config_.upClassName]);
   }
+
   this.lastScrollPos_ = scrollPos;
 };
-
-
-/**
- * Returns the current scroll position.
- */
-function getScrollPos() {
-  if (window.pageYOffset !== undefined) {
-    return window.pageYOffset;
-  }
-  return document.documentElement.scrollTop;
-}
 
 
 /**
@@ -73,47 +74,19 @@ function getScrollPos() {
  * @param {Object=} opt_config Config options.
  */
 function init(opt_config) {
-  var config = cloneAndMerge(defaultConfig, opt_config || {});
+  var config = objects.clone(defaultConfig);
+  if (opt_config) {
+    objects.merge(config, opt_config);
+  }
 
   var els = document.querySelectorAll(config.querySelector);
   for (var i = 0, el; el = els[i]; i++) {
     var obj = new ScrollToggle(el, config);
-    objs.push(obj);
+    scrolldelegator.addDelegate(obj);
   }
 
-  // Debounce the scroll event by executing the onScroll callback using a timed
-  // interval.
-  document.addEventListener('scroll', function(e) {
-    scrolled = true;
-  });
-  window.setInterval(function() {
-    if (scrolled) {
-      for (var i = 0, obj; obj = objs[i]; i++) {
-        obj.onScroll();
-      }
-    }
-  }, 250);
+  scrolldelegator.start();
 }
-
-
-/**
- * Creates a clone of a and merges b.
- * @param {Object} a Object.
- * @param {Object} b Object.
- */
-function cloneAndMerge(a, b) {
-  // Clone a version of a.
-  var result = {};
-  for (var key in a) {
-    result[key] = a[key];
-  }
-  // Merge b into copy of a.
-  for (var key in b) {
-    result[key] = b[key];
-  }
-  return result;
-}
-
 
 module.exports = {
   init: init
