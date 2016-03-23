@@ -1,6 +1,6 @@
 var classes = require('../utils/classes');
 var objects = require('../utils/objects');
-var scrolldelegator = require('../utils/scrolldelegator');
+var scrolldelegator = require('../scrolldelegator');
 
 
 var scrolled = false;
