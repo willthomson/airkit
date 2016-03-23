@@ -1,4 +1,9 @@
 /**
+ * @fileoverview Utility functions for working with objects.
+ */
+
+
+/**
  * Clones a.
  */
 function clone(a) {
@@ -18,6 +23,7 @@ function merge(a, b) {
     a[key] = b[key];
   }
 }
+
 
 module.exports = {
   clone: clone,
