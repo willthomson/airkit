@@ -1,5 +1,5 @@
 /**
- * @fileoverview Utility functions related to mobile devices.
+ * @fileoverview Utility functions related to the user agent.
  */
 
 
