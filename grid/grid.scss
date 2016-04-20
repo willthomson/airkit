@@ -1,0 +1,51 @@
+.ak-grid {
+  display: flex;
+  flex-wrap: wrap;
+
+  // Column widths.
+  @for $i from 1 through 12 {
+    &--#{$i}-cols > &__item {
+      width: 1 / $i * 100%;
+    }
+  }
+  @for $i from 1 through 12 {
+    &__item--#{$i}-cols {
+      width: $i / 12 * 100%;
+    }
+  }
+
+  // Reversed direction.
+  &--reversed {
+    flex-direction: row-reverse;
+  }
+
+  // Horizontal alignment.
+  &--align-center {
+    justify-content: center;
+  }
+  &--align-right {
+    justify-content: flex-end;
+  }
+  &--align-space-around {
+    justify-content: space-around;
+  }
+  &--align-space-between {
+    justify-content: space-between;
+  }
+
+  // Vertical alignment.
+  &--valign-middle > &__item {
+    align-self: center;
+  }
+  &--valign-bottom > &__item {
+    align-self: flex-end;
+  }
+  &__item {
+    &--valign-middle {
+      align-self: center;
+    }
+    &--valign-bottom {
+      align-self: flex-end;
+    }
+  }
+}
