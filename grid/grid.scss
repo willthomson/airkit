@@ -1,4 +1,8 @@
+// Padding between grid items.
+$ak-grid-padding: 20px !default;
+
 .ak-grid {
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
 
@@ -11,6 +15,19 @@
   @for $i from 1 through 12 {
     &__item--#{$i}-cols {
       width: $i / 12 * 100%;
+    }
+  }
+
+  // Padded grid items.
+  &--padded {
+    margin-bottom: -1 * $ak-grid-padding;
+    margin-left: -0.5 * $ak-grid-padding;
+    margin-right: -0.5 * $ak-grid-padding;
+
+    .ak-grid__item {
+      margin-bottom: $ak-grid-padding;
+      padding-left: 0.5 * $ak-grid-padding;
+      padding-right: 0.5 * $ak-grid-padding;
     }
   }
 
