@@ -12,13 +12,14 @@ var watchify = require('watchify');
  * @param {Array.<string>} sources List of JS source files.
  * @param {string} outdir Output directory.
  * @param {string} outfile Output file name.
+ * @param {Object=} opt_options Options.
  */
-function compilejs(sources, outdir, outfile) {
+function compilejs(sources, outdir, outfile, opt_options) {
   var bundler = browserify({
     entries: sources,
     debug: false
   });
-  return rebundle_(bundler, outdir, outfile);
+  return rebundle_(bundler, outdir, outfile, opt_options);
 }
 
 
@@ -27,8 +28,9 @@ function compilejs(sources, outdir, outfile) {
  * @param {Array.<string>} sources List of JS source files.
  * @param {string} outdir Output directory.
  * @param {string} outfile Output file name.
+ * @param {Object=} opt_options Options.
  */
-function watchjs(sources, outdir, outfile) {
+function watchjs(sources, outdir, outfile, opt_options) {
   var bundler = watchify(browserify({
     entries: sources,
     debug: false,
@@ -43,16 +45,17 @@ function watchjs(sources, outdir, outfile) {
     rebundle_(bundler, outdir, outfile);
     gutil.log('finished recompiling js');
   });
-  return rebundle_(bundler, outdir, outfile);
+  return rebundle_(bundler, outdir, outfile, opt_options);
 }
 
 
-function rebundle_(bundler, outdir, outfile) {
+function rebundle_(bundler, outdir, outfile, opt_options) {
+  var options = opt_options || {};
   return bundler.bundle()
     .on('error', gutil.log.bind(gutil, 'browserify error'))
     .pipe(source(outfile))
     .pipe(buffer())
-    .pipe(uglify())
+    .pipe(uglify(options.uglify))
     .pipe(gulp.dest(outdir));
 }
 
