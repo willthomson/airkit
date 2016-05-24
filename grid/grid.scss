@@ -1,7 +1,9 @@
+// The root classname.
+$ak-grid-classname: "ak-grid" !default;
 // Padding between grid items.
 $ak-grid-padding: 20px !default;
 
-.ak-grid {
+.#{$ak-grid-classname} {
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
@@ -23,12 +25,11 @@ $ak-grid-padding: 20px !default;
     margin-bottom: -1 * $ak-grid-padding;
     margin-left: -0.5 * $ak-grid-padding;
     margin-right: -0.5 * $ak-grid-padding;
-
-    .ak-grid__item {
-      margin-bottom: $ak-grid-padding;
-      padding-left: 0.5 * $ak-grid-padding;
-      padding-right: 0.5 * $ak-grid-padding;
-    }
+  }
+  &--padded &__item {
+    margin-bottom: $ak-grid-padding;
+    padding-left: 0.5 * $ak-grid-padding;
+    padding-right: 0.5 * $ak-grid-padding;
   }
 
   // Reversed direction.
