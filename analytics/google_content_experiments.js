@@ -5,13 +5,18 @@
 var uri = require('../utils/uri');
 
 var ATTR = 'data-ak-gcx';
+var PARAM = 'variation';
 var initted = false;
 
 
-function initGoogleContentExperiments (experimentId) {
+function initGoogleContentExperiment(experimentId) {
   if (initted) {
     return;
   }
+
+  var styleEl = document.createElement('style');
+  styleEl.textContent = '[' + ATTR + '] { display: none !important }';
+  document.getElementsByTagName('head')[0].appendChild(styleEl);
 
   if (window.cxApi) {
     initVariations();
@@ -39,7 +44,7 @@ function setVariationShown(chosenVariationId) {
 
 
 function initVariations() {
-  var variationFromParam = uri.getParameterValue('variation');
+  var variationFromParam = uri.getParameterValue(PARAM);
   if (variationFromParam) {
     var variation = variationFromParam;
   } else {
@@ -50,5 +55,5 @@ function initVariations() {
 
 
 module.exports = {
-  initGoogleContentExperiments: initGoogleContentExperiments
+  initGoogleContentExperiment: initGoogleContentExperiment
 };
