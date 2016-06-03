@@ -15,8 +15,12 @@ string. This will override the value returned by GCX's `cxApi.chooseVariation`.
 JS
 
 ```javascript
-var gcx = require('airkit/analytics/googlecontentexperiments');
-gcx.init('<gcx experiment id>');
+<head>
+  <script>
+    var gcx = require('airkit/analytics/googlecontentexperiments');
+    gcx.init('<gcx experiment id>');
+  </script>
+</head>
 ```
 
 HTML
