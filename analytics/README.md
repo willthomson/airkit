@@ -16,9 +16,10 @@ JS
 
 ```javascript
 <head>
+  <script src="//www.google-analytics.com/cx/api.js?experiment=EXPERIMENT_ID"></script>
   <script>
     var gcx = require('airkit/analytics/googlecontentexperiments');
-    gcx.init('<gcx experiment id>');
+    gcx.init();
   </script>
 </head>
 ```
