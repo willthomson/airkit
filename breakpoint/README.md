@@ -1,7 +1,7 @@
 ### breakpoint
 
 The `breakpoint` module contains a set of SASS/SCSS mixins for handling `@media`
-using descriptive names for different screen widths.
+queries using descriptive names for different screen widths.
 
 Basic usage:
 
@@ -106,5 +106,5 @@ $ak-breakpoint-medium: 600px;
 
 ```sh
 sudo npm install -g mocha
-mocha mixins_test.js
+mocha test/mixins_test.js
 ```
