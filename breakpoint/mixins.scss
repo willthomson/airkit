@@ -1,0 +1,30 @@
+@import "vars";
+
+$ak-breakpoint-map: (
+  extra-small: $ak-breakpoint-extra-small,
+  small: $ak-breakpoint-small,
+  medium: $ak-breakpoint-medium,
+  large: $ak-breakpoint-large,
+  extra-large: $ak-breakpoint-extra-large,
+);
+
+@mixin ak-breakpoint-gt($size) {
+  $width: map-get($ak-breakpoint-map, $size);
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin ak-breakpoint-rule-gt($sizes: (small, medium, large), $include-root: true) {
+  @if $include-root {
+    @content;
+  }
+
+  @each $size in $sizes {
+    &--gt-#{$size} {
+      @include ak-breakpoint-gt($size) {
+        @content;
+      }
+    }
+  }
+}

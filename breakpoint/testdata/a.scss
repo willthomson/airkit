@@ -1,0 +1,30 @@
+@import "../mixins";
+
+.foo {
+  color: red;
+  @include ak-breakpoint-gt(small) {
+    color: green;
+  }
+  @include ak-breakpoint-gt(large) {
+    color: blue;
+  }
+
+  .bar {
+    color: black;
+    @include ak-breakpoint-gt(medium) {
+      color: white;
+    }
+  }
+}
+
+.bar {
+  @include ak-breakpoint-rule-gt($sizes: (small, medium)) {
+    display: block;
+  }
+
+  .baz {
+    @include ak-breakpoint-rule-gt($sizes: (small, medium)) {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,57 @@
+.foo {
+  color: red;
+}
+
+@media (min-width: 480px) {
+  .foo {
+    color: green;
+  }
+}
+
+@media (min-width: 1024px) {
+  .foo {
+    color: blue;
+  }
+}
+
+.foo .bar {
+  color: black;
+}
+
+@media (min-width: 718px) {
+  .foo .bar {
+    color: white;
+  }
+}
+
+.bar {
+  display: block;
+}
+
+@media (min-width: 480px) {
+  .bar--gt-small {
+    display: block;
+  }
+}
+
+@media (min-width: 718px) {
+  .bar--gt-medium {
+    display: block;
+  }
+}
+
+.bar .baz {
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .bar .baz--gt-small {
+    display: none;
+  }
+}
+
+@media (min-width: 718px) {
+  .bar .baz--gt-medium {
+    display: none;
+  }
+}
