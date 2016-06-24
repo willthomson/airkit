@@ -1,7 +1,5 @@
-// The root classname.
-$ak-grid-classname: "ak-grid" !default;
-// Padding between grid items.
-$ak-grid-padding: 20px !default;
+@import "../breakpoint/mixins";
+@import "./vars";
 
 .#{$ak-grid-classname} {
   box-sizing: border-box;
@@ -17,6 +15,21 @@ $ak-grid-padding: 20px !default;
   @for $i from 1 through 12 {
     &__item--#{$i}-cols {
       width: $i / 12 * 100%;
+    }
+  }
+  // Responsive column widths.
+  @each $size in $ak-grid-column-sizes {
+    @include ak-breakpoint-gt($size) {
+      @for $i from 1 through 12 {
+        &--#{$i}-cols--gt-#{$size} > &__item {
+          width: 1 / $i * 100%;
+        }
+      }
+      @for $i from 1 through 12 {
+        &__item--#{$i}-cols {
+          width: $i / 12 * 100%;
+        }
+      }
     }
   }
 
