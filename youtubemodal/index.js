@@ -118,7 +118,11 @@ YouTubeModal.prototype.play = function(videoId) {
     this.setVisible(true);
   }
 
-  if (player) {
+  if (player && videoId == this.activeVideoId_) {
+    return;
+  } else if (player && videoId != this.activeVideoId_) {
+    player.loadVideoById(videoId, 0, 'large');
+    this.activeVideoId_ = videoId;
     return;
   }
   var playerEl = document.querySelector('.' + this.config.className + '-player');
@@ -127,6 +131,7 @@ YouTubeModal.prototype.play = function(videoId) {
     'playerVars': objects.clone(this.config.playerVars)
   };
   player = new YT.Player(playerEl, options);
+  this.activeVideoId_ = videoId;
 }
 
 
