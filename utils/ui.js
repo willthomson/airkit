@@ -29,6 +29,28 @@ function isElementInView(el, opt_offset) {
 }
 
 
+/**
+ * Creates a style element and inserts it into the head of the document.
+ * @param {Array.Array} A list of [<string>, <string>] elements where the first
+ *     element is the selector to create and the second element is the
+ *     corresponding style. Example: [['.foo', 'display: none']]
+ * @return {Element} Created style element.
+ */
+function createStyle(selectorsAndValues) {
+  var content = '';
+  [].forEach.call(selectorsAndValues, function(item) {
+    var selector = item[0];
+    var value = item[1];
+    content += ' ' + selector + ' { ' + value + ' }' + ' ';
+  });
+  var styleEl = document.createElement('style');
+  styleEl.textContent = content;
+  document.getElementsByTagName('head')[0].appendChild(styleEl);
+  return styleEl;
+}
+
+
 module.exports = {
+  createStyle: createStyle,
   isElementInView: isElementInView
 };
