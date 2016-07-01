@@ -44,18 +44,12 @@ function initVideoFallback(opt_attributeName) {
   var videoAttributeName = opt_attributeName || defaultConfig.videoAttributeName;
   var videoSelector = '[' + videoAttributeName + '] video';
   var imageSelector = '[' + videoAttributeName + '] img';
-  var hidden = 'display: none !important';
-  var rules = [];
+  var hidden = {'display': 'none !important'};
+  var rules = {};
   if (canPlayVideo()) {
-    rules.push({
-      selector: imageSelector,
-      declarations: [hidden]
-    });
+    rules[imageSelector] = hidden;
   } else {
-    rules.push({
-      selector: videoSelector, 
-      declarations: [hidden]
-    });
+    rules[videoSelector] = hidden;
   }
   ui.createStyle(rules);
 }

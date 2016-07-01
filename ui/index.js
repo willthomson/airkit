@@ -5,30 +5,37 @@
 
 /**
  * Creates a style element and inserts it into the head of the document.
- * @param {Array.Object} rules A list of rules to insert into the created
- *     style. Rules must contain a `selector` key, and a `declarations` key,
- *     which is a list. Example:
- *     
- *     [{
- *         selector: 'body',
- *         declarations: [
- *             'font-weight: bold',
- *             'color: red'
- *         ]
- *      }].
+ * @param {Object} rules An object containing CSS rules. Example:
+ *
+ *    {
+ *        'body': {
+ *            'font-weight': bold',
+ *            'color': 'red'
+ *        },
+ *        'div.hero': {
+ *            'font-size': '20px'
+ *        }
+ *    }
+ *
  * @return {Element} Created style element.
  */
 function createStyle(rules) {
   var content = [];
-  [].forEach.call(rules, function(rule) {
-    var selector = rule.selector;
-    var declarations = [];
-    rule.declarations.forEach(function(declaration) {
-      declarations.push(declaration.replace(/-+$/, ''));
-    });
-    declarations = declarations.join(';');
-    content.push(' ' + selector + ' { ' + declarations + ' }' + ' ');
-  });
+  for (var selector in rules) {
+      if (!rules.hasOwnProperty(selector)) {
+        continue;
+      }
+      var declarations = rules[selector];
+      var declarationsToAdd = [];
+      for (var key in declarations) {
+        if (!declarations.hasOwnProperty(key)) {
+          continue;
+        }
+        var value = declarations[key];
+        declarationsToAdd.push(key + ':' + value);
+      }
+      content.push(selector + '{' + declarationsToAdd.join(';') + '}');
+  }
   content = content.join('');
   var styleEl = document.createElement('style');
   styleEl.textContent = content;

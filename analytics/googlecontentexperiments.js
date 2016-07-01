@@ -43,11 +43,8 @@ function setVariationShown(enabledVariation, config) {
   var attrName = config.attributeName;
   var selector = '[' + attrName + ']:not([' + attrName +
         '="' + enabledVariation + '"])';
-  var declaration = 'display: none !important';
-  var rules = [{
-    selector: selector,
-    declarations: [declaration]
-  }];
+  var rules = {};
+  rules[selector] = {'display': 'none !important'};
   ui.createStyle(rules);
 }
 
