@@ -7,7 +7,8 @@ var useragent = require('./useragent');
 
 
 var defaultConfig = {
-  videoAttributeName: 'data-ak-video-fallback'
+  fallbackVideoSelector: '[data-ak-video-fallback] video',
+  fallbackImageSelector: '[data-ak-video-fallback] img'
 };
 
 
@@ -39,11 +40,13 @@ function canPlayVideo() {
  * (2) Run at the top of the page (to avoid FOUC):
  *
  *   initVideoFallback();
+ *
+ * @param {string=} opt_videoSelector Query selector to use to find videos to hide.
+ * @param {string=} opt_imageSelector Query selector to use to find images to hide.
  */
-function initVideoFallback(opt_attributeName) {
-  var videoAttributeName = opt_attributeName || defaultConfig.videoAttributeName;
-  var videoSelector = '[' + videoAttributeName + '] video';
-  var imageSelector = '[' + videoAttributeName + '] img';
+function initVideoFallback(opt_videoSelector, opt_imageSelector) {
+  var videoSelector = opt_videoSelector || defaultConfig.fallbackVideoSelector;
+  var imageSelector = opt_imageSelector || defaultConfig.fallbackImageSelector;
   var hidden = {'display': 'none !important'};
   var rules = {};
   if (canPlayVideo()) {
