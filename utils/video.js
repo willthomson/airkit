@@ -2,13 +2,20 @@
  * @fileoverview Utility functions related to videos.
  */
 
-var ui = require('./ui');
+var ui = require('../ui');
 var useragent = require('./useragent');
 
 
 var defaultConfig = {
   videoAttributeName: 'data-ak-video-fallback'
 };
+
+
+/** Returns whether the user agent can play video. */
+function canPlayVideo() {
+  var videoEl = document.createElement('video');
+  return videoEl.canPlayType && !useragent.isMobile();
+}
 
 
 /**
@@ -35,21 +42,26 @@ var defaultConfig = {
  */
 function initVideoFallback(opt_attributeName) {
   var videoAttributeName = opt_attributeName || defaultConfig.videoAttributeName;
-  var videoEl = document.createElement('video');
-  var canPlayVideo = Boolean(videoEl.canPlayType) && !useragent.isMobile();
   var videoSelector = '[' + videoAttributeName + '] video';
   var imageSelector = '[' + videoAttributeName + '] img';
   var hidden = 'display: none !important';
-  var styles = [];
-  if (canPlayVideo) {
-    styles.push([imageSelector, hidden]);
+  var rules = [];
+  if (canPlayVideo()) {
+    rules.push({
+      selector: imageSelector,
+      declarations: [hidden]
+    });
   } else {
-    styles.push([videoSelector, hidden]);
+    rules.push({
+      selector: videoSelector, 
+      declarations: [hidden]
+    });
   }
-  ui.createStyle(styles);
+  ui.createStyle(rules);
 }
 
 
 module.exports = {
+  canPlayVideo: canPlayVideo,
   initVideoFallback: initVideoFallback
 };

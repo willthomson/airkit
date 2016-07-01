@@ -43,9 +43,12 @@ function setVariationShown(enabledVariation, config) {
   var attrName = config.attributeName;
   var selector = '[' + attrName + ']:not([' + attrName +
         '="' + enabledVariation + '"])';
-  var value = 'display: none !important';
-  var items = [[selector, value]];
-  ui.createStyle(items);
+  var declaration = 'display: none !important';
+  var rules = [{
+    selector: selector,
+    declarations: [declaration]
+  }];
+  ui.createStyle(rules);
 }
 
 
