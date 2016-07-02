@@ -9,7 +9,7 @@
  *
  *    {
  *        'body': {
- *            'font-weight': bold',
+ *            'font-weight': 'bold',
  *            'color': 'red'
  *        },
  *        'div.hero': {
