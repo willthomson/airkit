@@ -3,6 +3,7 @@
  */
 
 var objects = require('../utils/objects');
+var ui = require('../utils/ui');
 var uri = require('../utils/uri');
 
 var defaultConfig = {
@@ -40,10 +41,11 @@ function initVariations(config) {
 
 function setVariationShown(enabledVariation, config) {
   var attrName = config.attributeName;
-  var styleEl = document.createElement('style');
-  styleEl.textContent = '[' + attrName + ']:not([' + attrName +
-        '="' + enabledVariation + '"]) { display: none !important }';
-  document.getElementsByTagName('head')[0].appendChild(styleEl);
+  var selector = '[' + attrName + ']:not([' + attrName +
+        '="' + enabledVariation + '"])';
+  var rules = {};
+  rules[selector] = {'display': 'none !important'};
+  ui.createStyle(rules);
 }
 
 
