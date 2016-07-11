@@ -3,7 +3,7 @@
  */
 
 var objects = require('../utils/objects');
-var ui = require('../utils/ui');
+var ui = require('../ui');
 var uri = require('../utils/uri');
 
 var defaultConfig = {
