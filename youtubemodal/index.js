@@ -13,6 +13,8 @@ var initted = false;
 var player = null;
 var defaultConfig = {
   useHandlerOnMobile: true,
+  history: false,
+  historyNamePrefix: 'video:',
   transitionDuration: 300,
   className: 'ak-youtubemodal',
   playerVars: {
@@ -64,8 +66,12 @@ YouTubeModal.prototype.initDom_ = function() {
   el.appendChild(createDom('div', this.config.className + '-mask'));
   document.body.appendChild(el);
   closeEl.addEventListener('click', function() {
-    this.setVisible(false);
+    this.setActive_(false);
   }.bind(this));
+
+  if (this.config.history) {
+    window.addEventListener('popstate', this.onHistoryChange_.bind(this));
+  }
 };
 
 
@@ -76,16 +82,19 @@ YouTubeModal.prototype.initDom_ = function() {
 YouTubeModal.prototype.setVisible = function(enabled) {
   // Plays or pauses depending on visibility.
   if (player) {
-    if (enabled) {
-      player.playVideo();
-    } else {
-      player.pauseVideo();
-    }
+    // Delay call to give player time to load.
+    window.setTimeout(function() {
+      if (enabled) {
+        player.playVideo();
+      } else {
+        player.pauseVideo();
+      }
+    }, 100);
   }
 
   var _keyToggle = function(e) {
     if (e.keyCode == 27) {
-      this.setVisible(false);
+      this.setActive_(false);
       document.body.removeEventListener('keydown', _keyToggle);
     }
   }.bind(this);
@@ -103,21 +112,68 @@ YouTubeModal.prototype.setVisible = function(enabled) {
   window.setTimeout(function() {
     classes.enable(lightboxEl, this.config.className + '--visible', enabled);
   }.bind(this), enabled ? this.config.transitionDuration : 0);
-}
+};
+
+
+/**
+ * Sets whether the modal is active (and thus visible and playing). Handles history state if applicable.
+ * @param {Boolean} active Whether the modal is active.
+ * @param {=string} opt_videoId Video ID to use in the history hash.
+ * @param {=Boolean} opt_updateState Whether to update the history state.
+ * @private
+ */
+YouTubeModal.prototype.setActive_ = function(active, opt_videoId, opt_updateState) {
+  if (!this.config.history) {
+    this.setVisible(active);
+    return;
+  }
+
+  this.setVisible(active);
+  if (opt_updateState === false) {
+    return;
+  }
+  var videoId = opt_videoId || this.activeVideoId_;
+  if (active) {
+    window.history.pushState(
+        {'videoId': videoId}, '',
+        '#' + this.config.historyNamePrefix + videoId);
+  } else {
+    window.history.pushState(
+        {'videoId': null}, '', window.location.pathname);
+  }
+};
+
+
+/**
+ * Callback for changes to the history state.
+ * @param {Event} e Pop state event.
+ * @private
+ */
+YouTubeModal.prototype.onHistoryChange_ = function(e) {
+  if (e.state && e.state['videoId']) {
+    this.play(e.state['videoId'], false);
+  } else {
+    this.setVisible(false);
+  }
+};
 
 
 /**
  * Plays a YouTube video.
  * @param {string} videoId Video ID to play.
+ * @param {=Boolean} opt_updateState Whether to update the history state.
  */
-YouTubeModal.prototype.play = function(videoId) {
-  if (this.config.useHandlerOnMobile &&
-      (useragent.isIOS() || useragent.isAndroid())) {
+YouTubeModal.prototype.play = function(videoId, opt_updateState) {
+  var useHandler = (
+      this.config.useHandlerOnMobile
+      && (useragent.isIOS() || useragent.isAndroid()));
+
+  if (useHandler) {
     window.location.href = 'https://m.youtube.com/watch?v=' + videoId;
-  } else {
-    this.setVisible(true);
+    return;
   }
 
+  this.setActive_(true, videoId, opt_updateState);
   if (player && videoId == this.activeVideoId_) {
     return;
   } else if (player && videoId != this.activeVideoId_) {

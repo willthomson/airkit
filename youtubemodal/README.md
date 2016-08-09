@@ -25,7 +25,9 @@ See [youtubemodal.sass](youtubemodal.sass) for an example Sass structure.
 
 Option | Default | Description
 ------ | ------- | -----------
-useHandlerOnMobile | true | Whether to open the video in a new tab, allowing mobile devices that intercept YouTube URLs to use the native player.
-transitionDuration | 300 | How long (in ms) to spend on the open/close transition.
 className | ak-youtubemodal | Class name to use for Sass and data-* attributes.
+history | false | Whether to enable closing the modal with the browser back button (and thus also updating the browser history state).
+historyNamePrefix | video: | If history is true, this is the value to prefix the state in the location hash.
 playerVars | (object) | [YouTube playerVars](https://developers.google.com/youtube/player_parameters#Parameters) parameters.
+transitionDuration | 300 | How long (in ms) to spend on the open/close transition.
+useHandlerOnMobile | true | Whether to open the video in a new tab, allowing mobile devices that intercept YouTube URLs to use the native player.
