@@ -134,6 +134,11 @@ YouTubeModal.prototype.setActive_ = function(active, opt_videoId, opt_updateStat
   }
   var videoId = opt_videoId || this.activeVideoId_;
   if (active) {
+    // Avoid pushing two equal items onto the state.
+    var stateId = window.history.state && window.history.state['videoId'];
+    if (stateId == videoId) {
+      return;
+    }
     window.history.pushState(
         {'videoId': videoId}, '',
         '#' + this.config.historyNamePrefix + videoId);
