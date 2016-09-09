@@ -42,7 +42,7 @@ function watchjs(sources, outdir, outfile, opt_options) {
 
   bundler.on('update', function() {
     gutil.log('recompiling js...');
-    rebundle_(bundler, outdir, outfile);
+    rebundle_(bundler, outdir, outfile, opt_options);
     gutil.log('finished recompiling js');
   });
   return rebundle_(bundler, outdir, outfile, opt_options);
