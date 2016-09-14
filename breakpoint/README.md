@@ -10,7 +10,7 @@ Basic usage:
 
 .foo {
   color: red;
-  @include ak-breakpoint-gt(large) {
+  @include ak-breakpoint-gt(lg) {
     color: blue;
   }
 }
@@ -40,11 +40,11 @@ elements at various widths.
 HTML:
 
 ```html
-<div class="show hide--gt-small">
+<div class="show hide--gt-sm">
   I'm on mobile!
 </div>
 
-<div class="hide show--gt-small">
+<div class="hide show--gt-sm">
   I'm not on mobile!
 </div>
 ```
@@ -53,13 +53,13 @@ SCSS:
 
 ```scss
 .hide {
-  @include ak-breakpoint-rule-gt() {
+  @include ak-breakpoint-rule-gt(sm) {
     display: none;
   }
 }
 
 .show {
-  @include ak-breakpoint-rule-gt() {
+  @include ak-breakpoint-rule-gt(sm) {
     display: block;
   }
 }
@@ -72,7 +72,7 @@ Compiles to:
   display: none;
 }
 @media (min-width: 480px) {
-  .hide--gt-small {
+  .hide--gt-sm {
     display: none;
   }
 }
@@ -81,7 +81,7 @@ Compiles to:
   display: none;
 }
 @media (min-width: 480px) {
-  .show--gt-small {
+  .show--gt-sm {
     display: block;
   }
 }
@@ -96,8 +96,8 @@ module.
 Example:
 
 ```scss
-$ak-breakpoint-small: 520px;
-$ak-breakpoint-medium: 600px;
+$ak-breakpoint-sm: 520px;
+$ak-breakpoint-md: 600px;
 
 @import "airkit/breakpoint/mixins";
 ```
