@@ -11,7 +11,7 @@ function addDelegatedListener(el, type, listener) {
     var target = e.target || e.srcElement;
     target = target.nodeType === 3 ? target.parentNode : target;
     do {
-      listener(target);
+      listener(target, e);
       if (target.parentNode) {
         target = target.parentNode;
       }
