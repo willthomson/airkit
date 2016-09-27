@@ -10,12 +10,14 @@ var ui = require('../ui');
 var useragent = require('../utils/useragent');
 
 
-var initted = false;
+var modalInstance = null;
 var defaultConfig = {
   className: 'ak-modal',
   history: true,
   historyNamePrefix: '',
-  transitionDuration: 300
+  transitionDuration: 300,
+  onModalOpen: null,
+  onModalClose: null
 };
 
 
@@ -140,6 +142,7 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
     var contentEl = containerEl.querySelector('div');
     this.contentContainerEl.setAttribute(activeAttr, opt_modalId);
     this.contentContainerEl.appendChild(contentEl);
+    this.config.onModalOpen && this.config.onModalOpen(opt_modalId)
   } else {
     var activeId = this.contentContainerEl.getAttribute(activeAttr);
     this.contentContainerEl.removeAttribute(activeAttr);
@@ -149,6 +152,7 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
       var currentContentEl = this.contentContainerEl.querySelector('div');
       originalContainer.appendChild(currentContentEl);
     }
+    this.config.onModalClose && this.config.onModalClose(activeId)
   }
 
   this.setVisible(active);
@@ -193,7 +197,7 @@ Modal.prototype.onHistoryChange_ = function(e) {
  * @param {Object=} opt_config Config options.
  */
 function init(opt_config) {
-  if (initted) {
+  if (modalInstance) {
     return;
   }
   var config = objects.clone(defaultConfig);
@@ -201,11 +205,22 @@ function init(opt_config) {
     objects.merge(config, opt_config);
   }
 
-  new Modal(config);
-  initted = true;
+  modalInstance = new Modal(config);
+}
+
+
+/**
+ * Opens modal by a specific id.
+ */
+function openModalById(id) {
+  if (!modalInstance) {
+    return;
+  }
+  modalInstance.setActive_(true, id, true);
 }
 
 
 module.exports = {
-  init: init
+  init: init,
+  openModalById: openModalById
 };
