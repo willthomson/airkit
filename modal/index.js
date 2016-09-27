@@ -213,14 +213,19 @@ function init(opt_config) {
  * Opens modal by a specific id.
  */
 function openModalById(id) {
-  if (!modalInstance) {
-    return;
-  }
-  modalInstance.setActive_(true, id, true);
+  modalInstance && modalInstance.setActive_(true, id, true);
+}
+
+/**
+ * Closes current modal
+ */
+function closeModal() {
+  modalInstance && modalInstance.setActive_(false, null, true);
 }
 
 
 module.exports = {
   init: init,
-  openModalById: openModalById
+  openModalById: openModalById,
+  closeModal: closeModal
 };
