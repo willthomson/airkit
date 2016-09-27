@@ -137,6 +137,19 @@ Modal.prototype.setVisible = function(enabled) {
 Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
   var activeAttr = 'data-' + this.config.className + '-active-id';
   if (active) {
+
+    // Revert child node which may exist if modal is consequetively opened
+    // without being closed.
+    if(this.contentContainerEl.firstChild) {
+      var activeId = this.contentContainerEl.getAttribute(activeAttr);
+      this.contentContainerEl.removeAttribute(activeAttr);
+      var originalContainer = document.querySelector(
+          '[data-' + this.config.className + '="' + activeId + '"]');
+      if (originalContainer) {
+        originalContainer.appendChild(this.contentContainerEl.firstChild);
+      }
+    }
+
     var containerEl = document.querySelector(
         '[data-' + this.config.className + '="' + opt_modalId + '"]');
     var contentEl = containerEl.querySelector('div');
