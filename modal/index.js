@@ -138,8 +138,8 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
   var activeAttr = 'data-' + this.config.className + '-active-id';
   if (active) {
 
-    // Revert child node which may exist if modal is consequetively opened
-    // without being closed.
+    // Revert child node to original element which may exist if modal is
+    // consecutively opened without first being closed.
     if(this.contentContainerEl.firstChild) {
       var activeId = this.contentContainerEl.getAttribute(activeAttr);
       this.contentContainerEl.removeAttribute(activeAttr);
