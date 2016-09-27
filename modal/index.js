@@ -232,7 +232,7 @@ function openById(id) {
 /**
  * Closes current modal
  */
-function closel() {
+function close() {
   modalInstance && modalInstance.setActive_(false, null, true);
 }
 
