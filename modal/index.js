@@ -225,20 +225,20 @@ function init(opt_config) {
 /**
  * Opens modal by a specific id.
  */
-function openModalById(id) {
+function openById(id) {
   modalInstance && modalInstance.setActive_(true, id, true);
 }
 
 /**
  * Closes current modal
  */
-function closeModal() {
+function closel() {
   modalInstance && modalInstance.setActive_(false, null, true);
 }
 
 
 module.exports = {
   init: init,
-  openModalById: openModalById,
-  closeModal: closeModal
+  openById: openById,
+  close: close
 };
