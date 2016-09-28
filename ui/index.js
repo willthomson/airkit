@@ -17,27 +17,32 @@
  *        }
  *    }
  *
+ * @param {=string} opt_mediaQuery Media query value to contain created rules.
+ *    Example: "(min-width: 800px)".
  * @return {Element} Created style element.
  */
-function createStyle(rules) {
+function createStyle(rules, opt_mediaQuery) {
   var content = [];
   for (var selector in rules) {
-      if (!rules.hasOwnProperty(selector)) {
+    if (!rules.hasOwnProperty(selector)) {
+      continue;
+    }
+    var declarations = rules[selector];
+    var declarationsToAdd = [];
+    for (var key in declarations) {
+      if (!declarations.hasOwnProperty(key)) {
         continue;
       }
-      var declarations = rules[selector];
-      var declarationsToAdd = [];
-      for (var key in declarations) {
-        if (!declarations.hasOwnProperty(key)) {
-          continue;
-        }
-        var value = declarations[key];
-        declarationsToAdd.push(key + ':' + value);
-      }
-      content.push(selector + '{' + declarationsToAdd.join(';') + '}');
+      var value = declarations[key];
+      declarationsToAdd.push(key + ':' + value);
+    }
+    content.push(selector + '{' + declarationsToAdd.join(';') + '}');
   }
   content = content.join('');
   var styleEl = document.createElement('style');
+  if (opt_mediaQuery) {
+    content = '@media ' + opt_mediaQuery + ' {' + content + '}';
+  }
   styleEl.textContent = content;
   document.head.appendChild(styleEl);
   return styleEl;

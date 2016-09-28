@@ -7,6 +7,7 @@ var useragent = require('./useragent');
 
 
 var defaultConfig = {
+  breakpoint: null,
   fallbackVideoSelector: '.ak-video-fallback video',
   fallbackImageSelector: '.ak-video-fallback img'
 };
@@ -50,6 +51,9 @@ function initVideoFallback(opt_config) {
       || defaultConfig.fallbackVideoSelector;
   var imageSelector = (opt_config && opt_config.imageSelector)
       || defaultConfig.fallbackImageSelector;
+  var breakpoint = (opt_config && opt_config.breakpoint)
+      || defaultConfig.breakpoint;
+
   var hidden = {'display': 'none !important'};
   var rules = {};
   if (canPlayVideo()) {
@@ -57,7 +61,18 @@ function initVideoFallback(opt_config) {
   } else {
     rules[videoSelector] = hidden;
   }
-  ui.createStyle(rules);
+
+  if (!breakpoint) {
+    ui.createStyle(rules);
+  } else {
+    var minScreenQuery = '(min-width: ' + breakpoint + 'px)';
+    ui.createStyle(rules, minScreenQuery);
+    var smallerBreakpoint = breakpoint - 1;
+    var maxScreenQuery = '(max-width: ' + smallerBreakpoint + 'px)';
+    rules = {};
+    rules[videoSelector] = hidden;
+    ui.createStyle(rules, maxScreenQuery);
+  }
 }
 
 
