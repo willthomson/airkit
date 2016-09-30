@@ -29,12 +29,16 @@ function Modal(config) {
   this.config = config;
   this.initDom_();
 
+  var closeClass = this.config.className + '-x';
+  var data = 'data-' + this.config.className + '-id';
   var func = function(targetEl, e) {
-    var data = 'data-' + this.config.className + '-id';
     var modalId = targetEl.getAttribute(data);
     if (modalId) {
       e.preventDefault();
       this.setActive_(true, modalId);
+    }
+    if (targetEl.classList.contains(closeClass)) {
+      this.setActive_(false);
     }
   }.bind(this);
   events.addDelegatedListener(document, 'click', func);
@@ -87,9 +91,6 @@ Modal.prototype.initDom_ = function() {
   var contentContainerEl = createDom('div', this.config.className + '-content')
   el.appendChild(contentContainerEl);
   document.body.appendChild(el);
-  closeEl.addEventListener('click', function() {
-    this.setActive_(false);
-  }.bind(this));
 
   this.contentContainerEl = contentContainerEl;
 
@@ -140,7 +141,7 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
 
     // Revert child node to original element which may exist if modal is
     // consecutively opened without first being closed.
-    if(this.contentContainerEl.firstChild) {
+    if (this.contentContainerEl.firstChild) {
       var activeId = this.contentContainerEl.getAttribute(activeAttr);
       this.contentContainerEl.removeAttribute(activeAttr);
       var originalContainer = document.querySelector(
