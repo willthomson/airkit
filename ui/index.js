@@ -56,9 +56,11 @@ function createStyle(rules, opt_mediaQuery) {
  *    whether the element is in view. The value of opt_offset should
  *    be a fraction (e.g. 0.85) and the resulting offset value is
  *    determined by multiplying opt_offset with the element's height.
+ * @param {boolean} opt_fromTop Whether to skip checking the sides of the
+ * element and just verify tops and bottoms are in the viewport.
  * @return {boolean} Whether the element is in view.
  */
-function isElementInView(el, opt_offset) { 
+function isElementInView(el, opt_offset, opt_fromTop) {
   var rect = el.getBoundingClientRect();
   var root = document.documentElement;
   var height = rect.bottom - rect.top;
@@ -66,12 +68,16 @@ function isElementInView(el, opt_offset) {
   if (opt_offset) {
     offset = height * opt_offset;
   }
-  return (
-    rect.top + offset >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom - offset <= (window.innerHeight || root.clientHeight) &&
-    rect.right <= (window.innerWidth || root.clientWidth)
+  var result = (
+        rect.top + offset >= 0 &&
+        rect.bottom - offset <= (window.innerHeight || root.clientHeight)
   );
+  if (opt_fromTop !== true) {
+    return (result &&
+        rect.left >= 0 &&
+        rect.right <= (window.innerWidth || root.clientWidth));
+  }
+  return result;
 }
 
 

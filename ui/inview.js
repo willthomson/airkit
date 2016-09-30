@@ -111,7 +111,7 @@ InViewPlayer.prototype.playIfNotPlaying = function(el) {
 InViewPlayer.prototype.onScroll = function() {
   var els = document.querySelectorAll(this.selector);
   [].forEach.call(els, function(el) {
-    if (ui.isElementInView(el, this.offset)) {
+    if (ui.isElementInView(el, this.offset, true)) {
       if (this.delay) {
         var min = this.delay[0];
         var max = this.delay[1];
