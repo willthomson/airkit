@@ -9,8 +9,8 @@ var objects = require('../utils/objects');
 var useragent = require('../utils/useragent');
 
 
-var initted = false;
 var player = null;
+var singleton = null;
 var defaultConfig = {
   useHandlerOnMobile: true,
   history: false,
@@ -201,7 +201,7 @@ YouTubeModal.prototype.play = function(videoId, opt_updateState) {
  * @param {Object=} opt_config Config options.
  */
 function init(opt_config) {
-  if (initted) {
+  if (singleton) {
     return;
   }
   var config = objects.clone(defaultConfig);
@@ -209,11 +209,23 @@ function init(opt_config) {
     objects.merge(config, opt_config);
   }
 
-  new YouTubeModal(config);
-  initted = true;
+  singleton = new YouTubeModal(config);
+}
+
+
+/**
+ * Plays a YouTube video in a modal, without requiring a click on an element.
+ * @param {string} videoId YouTube video ID.
+ */
+function play(videoId) {
+  if (!singleton) {
+    throw 'youtubemodal.init must be run first.';
+  }
+  return singleton.play(videoId);
 }
 
 
 module.exports = {
-  init: init
+  init: init,
+  play: play
 };
