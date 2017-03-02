@@ -17,12 +17,15 @@ var video = require('../utils/video');
  * @param {number=} opt_offset Offset (by percentage of the element) to
  *     apply when checking if the element is in view.
  * @param {Array.<number>=} opt_delay An array of [min delay, max delay].
+ * @param {Boolean} opt_fromTop Whether to check if only the tops and bottoms
+ *     of the elements are in view, and to skip checking the sides.
  */
-var InViewClassAdder = function(selector, className, opt_offset, opt_delay) {
+var InViewClassAdder = function(selector, className, opt_offset, opt_delay, opt_fromTop) {
   this.selector = selector;
   this.className = className;
   this.offset = opt_offset || null;
   this.delay = opt_delay || 0;
+  this.fromTop = opt_fromTop || false;
 }; 
 
 
@@ -30,6 +33,7 @@ InViewClassAdder.DefaultConfig = {
   selector: '.ak-in-view--start',
   className: 'ak-in-view--end',
   offset: null,
+  fromTop: false,
   delay: 0,
 };
 
@@ -38,7 +42,7 @@ InViewClassAdder.DefaultConfig = {
 InViewClassAdder.prototype.onScroll = function() {
   var els = document.querySelectorAll(this.selector);
   [].forEach.call(els, function(el) {
-    if (ui.isElementInView(el, this.offset)) {
+    if (ui.isElementInView(el, this.offset, this.fromTop)) {
       if (this.delay) {
         var min = this.delay[0];
         var max = this.delay[1];
@@ -71,8 +75,9 @@ function addClassInView(config) {
   var selector = config.selector || InViewClassAdder.DefaultConfig.selector;
   var className = config.className || InViewClassAdder.DefaultConfig.className;
   var delay = config.delay || InViewClassAdder.DefaultConfig.delay;
+  var fromTop = config.fromTop || InViewClassAdder.DefaultConfig.fromTop;
   var offset = config.offset;
-  var classAdder = new InViewClassAdder(selector, className, offset, delay);
+  var classAdder = new InViewClassAdder(selector, className, offset, delay, fromTop);
   classAdder.onScroll();
   scrolldelegator.addDelegate(classAdder);
   scrolldelegator.start();
