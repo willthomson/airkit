@@ -16,6 +16,7 @@ var defaultConfig = {
   history: true,
   historyNamePrefix: '',
   transitionDuration: 300,
+  visibilityDuration: 0,
   onModalOpen: null,
   onModalClose: null
 };
@@ -122,9 +123,11 @@ Modal.prototype.setVisible = function(enabled) {
   window.setTimeout(function() {
     classes.enable(lightboxEl, this.config.className + '--enabled', enabled);
   }.bind(this), enabled ? 0 : this.config.transitionDuration);
+
   window.setTimeout(function() {
     classes.enable(lightboxEl, this.config.className + '--visible', enabled);
-  }.bind(this), enabled ? this.config.transitionDuration : 0);
+  }.bind(this), enabled ? this.config.visibilityDuration ||
+    this.config.transitionDuration : 0);
 };
 
 
