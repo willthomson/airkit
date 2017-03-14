@@ -28,6 +28,8 @@ var defaultConfig = {
  */
 function Modal(config) {
   this.config = config;
+  this.timers_ = [];
+
   this.initDom_();
 
   var closeClass = this.config.className + '-x';
@@ -120,14 +122,16 @@ Modal.prototype.setVisible = function(enabled) {
   }
 
   var lightboxEl = document.querySelector('.' + this.config.className);
-  window.setTimeout(function() {
+  var enableTimer = window.setTimeout(function() {
     classes.enable(lightboxEl, this.config.className + '--enabled', enabled);
   }.bind(this), enabled ? 0 : this.config.transitionDuration);
+  this.timers_.push(enableTimer);
 
-  window.setTimeout(function() {
+  var visibleTimer = window.setTimeout(function() {
     classes.enable(lightboxEl, this.config.className + '--visible', enabled);
   }.bind(this), enabled ? this.config.visibilityDuration ||
     this.config.transitionDuration : 0);
+  this.timers_.push(visibleTimer);
 };
 
 
@@ -140,6 +144,7 @@ Modal.prototype.setVisible = function(enabled) {
  */
 Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
   var activeAttr = 'data-' + this.config.className + '-active-id';
+  this.clearTimers_();
   if (active) {
 
     // Revert child node to original element which may exist if modal is
@@ -158,20 +163,21 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
         '[data-' + this.config.className + '="' + opt_modalId + '"]');
     var contentEl = containerEl.querySelector('div');
     this.contentContainerEl.setAttribute(activeAttr, opt_modalId);
-    this.contentContainerEl.appendChild(contentEl);
+    contentEl && this.contentContainerEl.appendChild(contentEl);
     this.config.onModalOpen && this.config.onModalOpen(opt_modalId)
   } else {
     var activeId = this.contentContainerEl.getAttribute(activeAttr);
     this.contentContainerEl.removeAttribute(activeAttr);
     var originalContainer = document.querySelector(
         '[data-' + this.config.className + '="' + activeId + '"]');
-        
-    window.setTimeout(function() {
+
+    var timer = window.setTimeout(function() {
       if (originalContainer) {
         var currentContentEl = this.contentContainerEl.querySelector('div');
-        originalContainer.appendChild(currentContentEl);
+        currentContentEl && originalContainer.appendChild(currentContentEl);
       }
     }.bind(this), this.config.transitionDuration);
+    this.timers_.push(timer);
 
     this.config.onModalClose && this.config.onModalClose(activeId)
   }
@@ -196,6 +202,18 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
         {'akModalId': null}, '', window.location.pathname);
   }
 };
+
+
+/**
+ * Clears all interval timers.
+ * @private
+ */
+Modal.prototype.clearTimers_ = function() {
+  this.timers_.forEach(function(timer) {
+    window.clearTimeout(timer);
+  });
+  this.timers_ = [];
+}
 
 
 /**
