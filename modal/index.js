@@ -146,6 +146,7 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
   var activeAttr = 'data-' + this.config.className + '-active-id';
   this.clearTimers_();
   if (active) {
+    this.returnContentToOrigin_();
 
     // Revert child node to original element which may exist if modal is
     // consecutively opened without first being closed.
@@ -166,22 +167,8 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
     contentEl && this.contentContainerEl.appendChild(contentEl);
     this.config.onModalOpen && this.config.onModalOpen(opt_modalId)
   } else {
-    var activeId = this.contentContainerEl.getAttribute(activeAttr);
-    this.contentContainerEl.removeAttribute(activeAttr);
-    var originalContainer = document.querySelector(
-        '[data-' + this.config.className + '="' + activeId + '"]');
-
-    var timer = window.setTimeout(function() {
-      if (originalContainer) {
-        var currentContentEl = this.contentContainerEl.querySelector('div');
-        currentContentEl && originalContainer.appendChild(currentContentEl);
-      }
-    }.bind(this), this.config.transitionDuration);
-    this.timers_.push(timer);
-
     this.config.onModalClose && this.config.onModalClose(activeId)
   }
-
   this.setVisible(active);
   if (!this.config.history || opt_updateState === false) {
     return;
@@ -202,6 +189,27 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
         {'akModalId': null}, '', window.location.pathname);
   }
 };
+
+
+/**
+ * Reverts modal contents back to it's original element.
+ * @private
+ */
+Modal.prototype.returnContentToOrigin_ = function() {
+  if(!this.contentContainerEl) {
+    return;
+  }
+  var activeAttr = 'data-' + this.config.className + '-active-id';
+  var activeId = this.contentContainerEl.getAttribute(activeAttr);
+  this.contentContainerEl.removeAttribute(activeAttr);
+  var originalContainer = document.querySelector(
+      '[data-' + this.config.className + '="' + activeId + '"]');
+
+  if (originalContainer) {
+    var currentContentEl = this.contentContainerEl.querySelector('div');
+    currentContentEl && originalContainer.appendChild(currentContentEl);
+  }
+}
 
 
 /**
