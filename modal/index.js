@@ -165,10 +165,14 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
     this.contentContainerEl.removeAttribute(activeAttr);
     var originalContainer = document.querySelector(
         '[data-' + this.config.className + '="' + activeId + '"]');
-    if (originalContainer) {
-      var currentContentEl = this.contentContainerEl.querySelector('div');
-      originalContainer.appendChild(currentContentEl);
-    }
+        
+    window.setTimeout(function() {
+      if (originalContainer) {
+        var currentContentEl = this.contentContainerEl.querySelector('div');
+        originalContainer.appendChild(currentContentEl);
+      }
+    }.bind(this), this.config.transitionDuration);
+
     this.config.onModalClose && this.config.onModalClose(activeId)
   }
 
