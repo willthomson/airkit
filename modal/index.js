@@ -126,14 +126,14 @@ Modal.prototype.setVisible = function(enabled) {
   var enterClass = this.config.className + '--enter';
   var exitClass = this.config.className + '--exit';
   window.setTimeout(function() {
-    if(enabled) {
+    if (enabled) {
       lightboxEl.classList.remove(exitClass);
       lightboxEl.classList.add(enterClass);
     } else {
       lightboxEl.classList.remove(enterClass);
       lightboxEl.classList.add(exitClass);
     }
-  });
+  }, 0);
 
   var enableTimer = window.setTimeout(function() {
     classes.enable(lightboxEl, this.config.className + '--enabled', enabled);
