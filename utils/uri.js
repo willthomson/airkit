@@ -33,6 +33,12 @@ var UpdateParamsFromUrlDefaultConfig = {
  *         attr from the current URL.
  */
 function updateParamsFromUrl(config) {
+  // If there is no query string in the URL, then there's nothing to do in this
+  // function, so break early.
+  if (!location.search) {
+    return;
+  }
+
   var c = objects.clone(UpdateParamsFromUrlDefaultConfig);
   objects.merge(c, config);
   var selector = c.selector;
@@ -43,44 +49,116 @@ function updateParamsFromUrl(config) {
   }
 
   var vals = {};
-  var currentUrl = new URL(location.href);
-  var keysIter = currentUrl.searchParams.keys();
-  while (true) {
-    var item = keysIter.next();
-    if (item.done) {
-      break;
-    }
-    var key = item.value;
+  parseQueryString(location.search, function(key, value) {
     for (var i = 0; i < params.length; i++) {
-      // TODO(stevenle): support keys that have multiple values.
       var param = params[i];
       if (param instanceof RegExp) {
         if (key.match(param)) {
-          vals[key] = currentUrl.searchParams.get(key);
+          vals[key] = value;
         }
       } else {
         if (param === key) {
-          vals[key] = currentUrl.searchParams.get(key);
+          vals[key] = value;
         }
       }
     }
-  }
+  });
 
   var els = document.querySelectorAll(selector);
   for (var i = 0, el; el = els[i]; i++) {
     var href = el.getAttribute(attr);
     if (href && !href.startsWith('#')) {
-      var url = new URL(el.getAttribute(attr), currentUrl);
+      var url = new URL(el.getAttribute(attr), location.href);
+
+      var map = parseQueryMap(url.search);
       for (key in vals) {
-        url.searchParams.set(key, vals[key]);
+        map[key] = vals[key];
       }
+      url.search = encodeQueryMap(map);
+
       el.setAttribute(attr, url.toString());
     }
   }
 }
 
 
+/**
+ * Parses a query string and calls a callback function for every key-value
+ * pair found in the string.
+ * @param {string} query Query string (without the leading question mark).
+ * @param {function(string, string)} callback Function called for every
+ *     key-value pair found in the query string.
+ */
+function parseQueryString(query, callback) {
+  // Break early for empty string.
+  if (!query) {
+    return;
+  }
+  // Remove leading `?` so that callers can pass `location.search` directly to
+  // this function.
+  if (query.startsWith('?')) {
+    query = query.slice(1);
+  }
+
+  var pairs = query.split('&');
+  for (var i = 0; i < pairs.length; i++) {
+    var separatorIndex = pairs[i].indexOf('=');
+    if (separatorIndex >= 0) {
+      var key = pairs[i].substring(0, separatorIndex);
+      var value = pairs[i].substring(separatorIndex + 1);
+      callback(key, urlDecode_(value));
+    } else {
+      // Treat "?foo" without the "=" as having an empty value.
+      var key = pairs[i];
+      callback(key, '');
+    }
+  }
+}
+
+
+/**
+ * Parses a query string and returns a map of key-value pairs.
+ * @param {string} query Query string (without the leading question mark).
+ * @return {Object} Map of key-value pairs.
+ */
+function parseQueryMap(query) {
+  var map = {};
+  parseQueryString(query, function(key, value) {
+    map[key] = value;
+  });
+  return map;
+}
+
+
+/**
+ * Returns a URL-encoded query string from a map of key-value pairs.
+ * @param {Object} map Map of key-value pairs.
+ * @return {string} URL-encoded query string.
+ */
+function encodeQueryMap(map) {
+  var params = [];
+  for (key in map) {
+    var value = map[key];
+    params.push(key + '=' + urlEncode_(value));
+  }
+  return params.join('&');
+}
+
+
+function urlDecode_(str) {
+  return decodeURIComponent(str.replace(/\+/g, ' '));
+}
+
+
+function urlEncode_(str) {
+  return encodeURIComponent(String(str));
+}
+
+
 module.exports = {
+  encodeQueryMap: encodeQueryMap,
   getParameterValue: getParameterValue,
+  parseQueryMap: parseQueryMap,
+  parseQueryString: parseQueryString,
   updateParamsFromUrl: updateParamsFromUrl
 };
