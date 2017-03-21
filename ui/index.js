@@ -68,14 +68,22 @@ function isElementInView(el, opt_offset, opt_fromTop) {
   if (opt_offset) {
     offset = height * opt_offset;
   }
-  var result = (
-        rect.top + offset >= 0 &&
-        rect.bottom - offset <= (window.innerHeight || root.clientHeight)
-  );
   if (opt_fromTop !== true) {
+    var result = (
+          (rect.top + offset >= 0) ||
+          (rect.bottom - offset <= (window.innerHeight || root.clientHeight))
+    );
     return (result &&
         rect.left >= 0 &&
         rect.right <= (window.innerWidth || root.clientWidth));
+  } else {
+    var viewport = {
+      top: window.scrollTop,
+      left: window.scrollLeft,
+      right: window.scrollTop + window.innerWidth || root.clientWidth,
+      bottom: window.scrollTop + window.innerHeight || root.clientHeight
+    };
+    return (!(viewport.right < rect.left || viewport.left > rect.right || viewport.bottom < rect.top || viewport.top > rect.bottom));
   }
   return result;
 }
