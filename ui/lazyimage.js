@@ -8,6 +8,9 @@ var scrolldelegator = require('../scrolldelegator');
 var ui = require('../ui');
 
 
+var instances = [];
+
+
 var LazyImageLoader = function(selector, attributeName, loadedClassNames) {
   this.selector = selector;
   this.attributeName = attributeName;
@@ -71,10 +74,20 @@ var init = function(opt_config) {
   document.addEventListener('DOMContentLoaded', function() {
     loader.onScroll();
   });
+  instances.push(loader);
   return loader;
 };
 
 
+/** Updates all initialized instances. */
+var update = function() {
+  [].forEach.call(instances, function(instance) {
+    instance.update();
+  });
+};
+
+
 module.exports = {
+  update: update,
   init: init
 };
