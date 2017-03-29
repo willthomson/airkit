@@ -76,6 +76,7 @@ LazyImageLoader.prototype.getSrcsetValue_ = function(el) {
   }
 
   // Find the first `sizes` width that matches the media query.
+  var imageWidth = null;
   var sizes = this.parseSizes_(sizesValue);
   for (var i = 0; i < sizes.length; i++) {
     if (window.matchMedia(sizes[i].media).matches) {
