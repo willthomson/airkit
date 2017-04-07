@@ -17,6 +17,13 @@ function getParameterValue(key, opt_uri) {
 }
 
 
+var UpdateParamsDefaultConfig = {
+  selector: 'a.ak-update-params[href]',
+  attr: 'href',
+  paramsToValues: null,  // required
+};
+
+
 var UpdateParamsFromUrlDefaultConfig = {
   selector: 'a.ak-update-params[href]',
   attr: 'href',
@@ -48,21 +55,44 @@ function updateParamsFromUrl(config) {
     throw '`params` is required';
   }
 
-  var vals = {};
+  var paramsToValues = {};
   parseQueryString(location.search, function(key, value) {
     for (var i = 0; i < params.length; i++) {
       var param = params[i];
       if (param instanceof RegExp) {
         if (key.match(param)) {
-          vals[key] = value;
+          paramsToValues[key] = value;
         }
       } else {
         if (param === key) {
-          vals[key] = value;
+          paramsToValues[key] = value;
         }
       }
     }
   });
+
+  c.paramsToValues = paramsToValues;
+  updateParams(c);
+}
+
+
+/**
+ * Updates the URL attribute of elements with query params from the current URL.
+ * @param {Object} config Config object. Properties are:
+ *     selector: CSS query selector of elements to act upon.
+ *     attr: The element attribute to update.
+ *     params: A list of URL params (string or RegExp) to set on the element
+ *         attr from the current URL.
+ */
+function updateParams(config) {
+  var c = objects.clone(UpdateParamsDefaultConfig);
+  objects.merge(c, config);
+  var selector = c.selector;
+  var attr = c.attr;
+  var paramsToValues = c.paramsToValues;
+  if (!paramsToValues) {
+    throw '`paramsToValues` is required';
+  }
 
   var els = document.querySelectorAll(selector);
   for (var i = 0, el; el = els[i]; i++) {
@@ -71,11 +101,10 @@ function updateParamsFromUrl(config) {
       var url = new URL(el.getAttribute(attr), location.href);
 
       var map = parseQueryMap(url.search);
-      for (key in vals) {
+      for (key in paramsToValues) {
         map[key] = vals[key];
       }
       url.search = encodeQueryMap(map);
-
       el.setAttribute(attr, url.toString());
     }
   }
@@ -160,5 +189,6 @@ module.exports = {
   getParameterValue: getParameterValue,
   parseQueryMap: parseQueryMap,
   parseQueryString: parseQueryString,
+  updateParams: updateParams,
   updateParamsFromUrl: updateParamsFromUrl
 };
