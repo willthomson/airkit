@@ -17,6 +17,7 @@ var defaultConfig = {
   historyNamePrefix: 'video:',
   transitionDuration: 300,
   className: 'ak-youtubemodal',
+  parentSelector: 'body',
   playerVars: {
     'autohide': 1,
     'autoplay': 1,
@@ -35,6 +36,7 @@ var defaultConfig = {
  */
 function YouTubeModal(config) {
   this.config = config;
+  this.parentElement = document.querySelector(this.config.parentSelector);
   this.initDom_();
 
   var func = function(targetEl) {
@@ -49,7 +51,7 @@ function YouTubeModal(config) {
   events.addDelegatedListener(document, 'click', func);
   var tag = document.createElement('script');
   tag.setAttribute('src', 'https://www.youtube.com/iframe_api');
-  document.body.appendChild(tag);
+  this.parentElement.appendChild(tag);
 }
 
 
@@ -64,7 +66,7 @@ YouTubeModal.prototype.initDom_ = function() {
   el.appendChild(closeEl);
   el.appendChild(createDom('div', this.config.className + '-player'));
   el.appendChild(createDom('div', this.config.className + '-mask'));
-  document.body.appendChild(el);
+  this.parentElement.appendChild(el);
   closeEl.addEventListener('click', function() {
     this.setActive_(false);
   }.bind(this));
