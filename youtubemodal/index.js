@@ -40,6 +40,7 @@ function YouTubeModal(config) {
   this.config = config;
   this.parentElement = document.querySelector(this.config.parentSelector);
   this.initDom_();
+  this.lastActiveVideoId_ = null;
 
   var func = function(targetEl) {
     var data = 'data-' + this.config.className + '-video-id';
@@ -127,10 +128,14 @@ YouTubeModal.prototype.setVisible = function(enabled) {
  * @private
  */
 YouTubeModal.prototype.setActive_ = function(active, opt_videoId, opt_updateState) {
+  if (opt_videoId) {
+    this.lastActiveVideoId_ = opt_videoId;
+  }
+
   if (active) {
-    this.config.onModalOpen && this.config.onModalOpen(opt_videoId)
+    this.config.onModalOpen && this.config.onModalOpen(this.lastActiveVideoId_);
   } else {
-    this.config.onModalClose && this.config.onModalClose(opt_videoId)
+    this.config.onModalClose && this.config.onModalClose(this.lastActiveVideoId_);
   }
   if (!this.config.history) {
     this.setVisible(active);
