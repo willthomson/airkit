@@ -18,6 +18,8 @@ var defaultConfig = {
   transitionDuration: 300,
   className: 'ak-youtubemodal',
   parentSelector: 'body',
+  onModalOpen: null,
+  onModalClose: null,
   playerVars: {
     'autohide': 1,
     'autoplay': 1,
@@ -125,6 +127,11 @@ YouTubeModal.prototype.setVisible = function(enabled) {
  * @private
  */
 YouTubeModal.prototype.setActive_ = function(active, opt_videoId, opt_updateState) {
+  if (active) {
+    this.config.onModalOpen && this.config.onModalOpen(opt_videoId)
+  } else {
+    this.config.onModalClose && this.config.onModalClose(opt_videoId)
+  }
   if (!this.config.history) {
     this.setVisible(active);
     return;
