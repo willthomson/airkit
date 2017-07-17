@@ -32,6 +32,7 @@ function Modal(config) {
 
   this.initDom_();
 
+  var closeAttribute = 'data-' + this.config.className + '-x';
   var closeClass = this.config.className + '-x';
   var data = 'data-' + this.config.className + '-id';
   var func = function(targetEl, e) {
@@ -40,7 +41,8 @@ function Modal(config) {
       e.preventDefault();
       this.setActive_(true, modalId);
     }
-    if (targetEl.classList.contains(closeClass)) {
+    if (targetEl.classList.contains(closeClass)
+        || targetEl.hasAttribute(closeAttribute)) {
       this.setActive_(false);
     }
   }.bind(this);
