@@ -45,7 +45,7 @@ function start() {
 
   // Debounce the scroll event by executing the onScroll callback using a timed
   // interval.
-  window.addEventListener('scroll', onScroll_);
+  window.addEventListener('scroll', onScroll_, {'passive': true});
   interval = window.setInterval(function() {
     if (scrolled) {
       for (var i = 0, delegate; delegate = delegates[i]; i++) {
