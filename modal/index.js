@@ -153,8 +153,8 @@ Modal.prototype.setVisible = function(enabled) {
 /**
  * Sets whether the modal is active. Handles history state if applicable.
  * @param {Boolean} active Whether the modal is active.
- * @param {=string} opt_modalId Modal ID to use in the history hash.
- * @param {=Boolean} opt_updateState Whether to update the history state.
+ * @param {string=} opt_modalId Modal ID to use in the history hash.
+ * @param {Boolean=} opt_updateState Whether to update the history state.
  * @private
  */
 Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {

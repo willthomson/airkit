@@ -83,7 +83,7 @@ YouTubeModal.prototype.initDom_ = function() {
 
 /**
  * Sets the modal's visibility.
- * @param {Boolean} enabled Whether the modal should be visible.
+ * @param {boolean} enabled Whether the modal should be visible.
  */
 YouTubeModal.prototype.setVisible = function(enabled) {
   // Plays or pauses depending on visibility.
@@ -123,9 +123,9 @@ YouTubeModal.prototype.setVisible = function(enabled) {
 
 /**
  * Sets whether the modal is active (and thus visible and playing). Handles history state if applicable.
- * @param {Boolean} active Whether the modal is active.
- * @param {=string} opt_videoId Video ID to use in the history hash.
- * @param {=Boolean} opt_updateState Whether to update the history state.
+ * @param {boolean} active Whether the modal is active.
+ * @param {string=} opt_videoId Video ID to use in the history hash.
+ * @param {boolean=} opt_updateState Whether to update the history state.
  * @private
  */
 YouTubeModal.prototype.setActive_ = function(active, opt_videoId, opt_updateState) {
@@ -183,7 +183,7 @@ YouTubeModal.prototype.onHistoryChange_ = function(e) {
 /**
  * Plays a YouTube video.
  * @param {string} videoId Video ID to play.
- * @param {=Boolean} opt_updateState Whether to update the history state.
+ * @param {boolean=} opt_updateState Whether to update the history state.
  */
 YouTubeModal.prototype.play = function(videoId, opt_updateState) {
   var useHandler = (

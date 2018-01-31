@@ -17,7 +17,7 @@
  *        }
  *    }
  *
- * @param {=string} opt_mediaQuery Media query value to contain created rules.
+ * @param {string=} opt_mediaQuery Media query value to contain created rules.
  *    Example: "(min-width: 800px)".
  * @return {Element} Created style element.
  */

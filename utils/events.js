@@ -3,7 +3,7 @@
  * is discovered by moving up the clicked element's descendants.
  * @param {Element} el Element to host the listener.
  * @param {string} type Listener type.
- * @param {function} listener Listener function.
+ * @param {Function} listener Listener function.
  */
 function addDelegatedListener(el, type, listener) {
   return el.addEventListener(type, function(e) {
