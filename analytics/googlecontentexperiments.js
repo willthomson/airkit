@@ -8,6 +8,7 @@ var uri = require('../utils/uri');
 
 var defaultConfig = {
   attributeName: 'data-ak-gcx',
+  setVariationShown: true,
   parameterName: 'variation'
 };
 
@@ -35,7 +36,24 @@ function initVariations(config) {
   } else if (window.cxApi) {
     variation = window.cxApi.chooseVariation();
   }
-  setVariationShown(variation, config);
+  if (config.setVariationShown) {
+    setVariationShown(variation, config);
+  } else {
+    setVariationDataAttribute(variation, config);
+  }
+}
+
+
+function setVariationDataAttribute(enabledVariation, config) {
+  var attrName = config.attributeName;
+  var selector = '[' + attrName + ']';
+  var els = document.querySelectorAll(selector);
+  if (!els.length) {
+    return;
+  }
+  [].forEach.call(els, function(el) {
+    el.setAttribute(attrName, enabledVariation);
+  });
 }
 
 
