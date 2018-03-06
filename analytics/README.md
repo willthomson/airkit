@@ -63,12 +63,12 @@ CSS
 
 ```css
 // When the variation is 1, h1 is red.
-[data-ak-gcx=1] h1 {
+[data-ak-gcx="1"] h1 {
   color: red;
 }
 
 // When the variation is 2, h1 is blue.
-[data-ak-gcx=2] h1 {
+[data-ak-gcx="2"] h1 {
   color: blue;
 }
 ```
