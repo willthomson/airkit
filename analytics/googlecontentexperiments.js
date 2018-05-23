@@ -28,7 +28,7 @@ function init(opt_config) {
 function initVariations(config) {
   var variationFromParam = parseInt(uri.getParameterValue(config.parameterName));
   var variation = 0;
-  if (variationFromParam && typeof variationFromParam == 'number') {
+  if (variationFromParam && typeof variationFromParam == 'number' || variationFromParam == 0) {
     variation = variationFromParam;
     if (window.cxApi) {
       window.cxApi.setChosenVariation(variation);
