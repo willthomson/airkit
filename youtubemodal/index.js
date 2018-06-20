@@ -218,7 +218,7 @@ YouTubeModal.prototype.play = function(videoId, opt_updateState, opt_startTime) 
 
   var options = {
     'videoId': videoId,
-    'playerVars': playerVars,
+    'playerVars': playerVars
   };
   player = new YT.Player(playerEl, options);
   this.activeVideoId_ = videoId;
