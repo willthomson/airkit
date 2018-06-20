@@ -46,8 +46,10 @@ function YouTubeModal(config) {
   var func = function(targetEl) {
     var data = 'data-' + this.config.className + '-video-id';
     var videoId = targetEl.getAttribute(data);
+    var startDataAttribute = 'data-' + this.config.className + '-video-start-seconds';
+    var startTime = +targetEl.getAttribute(startDataAttribute);
     if (videoId) {
-      this.play(videoId);
+      this.play(videoId, false, startTime);
     }
   }.bind(this);
 
@@ -184,14 +186,19 @@ YouTubeModal.prototype.onHistoryChange_ = function(e) {
  * Plays a YouTube video.
  * @param {string} videoId Video ID to play.
  * @param {boolean=} opt_updateState Whether to update the history state.
+ * @param {number?} opt_startTime A specific time in the video to start at.
  */
-YouTubeModal.prototype.play = function(videoId, opt_updateState) {
+YouTubeModal.prototype.play = function(videoId, opt_updateState, startTime) {
   var useHandler = (
       this.config.useHandlerOnMobile
       && (useragent.isIOS() || useragent.isAndroid()));
 
   if (useHandler) {
-    window.location.href = 'https://m.youtube.com/watch?v=' + videoId;
+    var url = 'https://m.youtube.com/watch?v=' + videoId;
+    if (startTime) {
+      url += '&t=' + startTime + 's';
+    }
+    window.location.href = url;
     return;
   }
 
@@ -204,9 +211,14 @@ YouTubeModal.prototype.play = function(videoId, opt_updateState) {
     return;
   }
   var playerEl = document.querySelector('.' + this.config.className + '-player');
+  let playerVars = objects.clone(this.config.playerVars);
+  if (startTime) {
+    playerVars['start'] = startTime;
+  }
+
   var options = {
     'videoId': videoId,
-    'playerVars': objects.clone(this.config.playerVars)
+    'playerVars': playerVars,
   };
   player = new YT.Player(playerEl, options);
   this.activeVideoId_ = videoId;
