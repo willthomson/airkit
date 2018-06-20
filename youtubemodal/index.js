@@ -186,17 +186,17 @@ YouTubeModal.prototype.onHistoryChange_ = function(e) {
  * Plays a YouTube video.
  * @param {string} videoId Video ID to play.
  * @param {boolean=} opt_updateState Whether to update the history state.
- * @param {number?} opt_startTime A specific time in the video to start at.
+ * @param {number=} opt_startTime A specific time in the video to start at.
  */
-YouTubeModal.prototype.play = function(videoId, opt_updateState, startTime) {
+YouTubeModal.prototype.play = function(videoId, opt_updateState, opt_startTime) {
   var useHandler = (
       this.config.useHandlerOnMobile
       && (useragent.isIOS() || useragent.isAndroid()));
 
   if (useHandler) {
     var url = 'https://m.youtube.com/watch?v=' + videoId;
-    if (startTime) {
-      url += '&t=' + startTime + 's';
+    if (opt_startTime) {
+      url += '&t=' + opt_startTime + 's';
     }
     window.location.href = url;
     return;
@@ -212,8 +212,8 @@ YouTubeModal.prototype.play = function(videoId, opt_updateState, startTime) {
   }
   var playerEl = document.querySelector('.' + this.config.className + '-player');
   let playerVars = objects.clone(this.config.playerVars);
-  if (startTime) {
-    playerVars['start'] = startTime;
+  if (opt_startTime) {
+    playerVars['start'] = opt_startTime;
   }
 
   var options = {
