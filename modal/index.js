@@ -29,6 +29,7 @@ var defaultConfig = {
 function Modal(config) {
   this.config = config;
   this.timers_ = [];
+  this.scrollY = 0;
 
   this.initDom_();
 
@@ -131,9 +132,11 @@ Modal.prototype.setVisible = function(enabled) {
     if (enabled) {
       lightboxEl.classList.remove(exitClass);
       lightboxEl.classList.add(enterClass);
+      this.scrollY = window.pageYOffset;
     } else {
       lightboxEl.classList.remove(enterClass);
       lightboxEl.classList.add(exitClass);
+      window.scrollTo(0, this.scrollY);
     }
   }, 0);
 
