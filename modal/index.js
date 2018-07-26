@@ -183,9 +183,9 @@ Modal.prototype.setActive_ = function(active, opt_modalId, opt_updateState) {
     var contentEl = containerEl.querySelector('div');
     this.contentContainerEl.setAttribute(activeAttr, opt_modalId);
     contentEl && this.contentContainerEl.appendChild(contentEl);
-    this.config.onModalOpen && this.config.onModalOpen(opt_modalId)
+    this.config.onModalOpen && this.config.onModalOpen(opt_modalId, this)
   } else {
-    this.config.onModalClose && this.config.onModalClose(activeId)
+    this.config.onModalClose && this.config.onModalClose(activeId, this)
   }
   this.setVisible(active);
   if (!this.config.history || opt_updateState === false) {
