@@ -69,6 +69,8 @@ YouTubeModal.prototype.initDom_ = function() {
   var createDom = dom.createDom;
   var el = createDom('div', this.config.className);
   var closeEl = createDom('div', this.config.className + '-x');
+  closeEl.setAttribute('role', 'button');
+  closeEl.setAttribute('aria-label', 'Close video player');
   el.appendChild(closeEl);
   el.appendChild(createDom('div', this.config.className + '-player'));
   el.appendChild(createDom('div', this.config.className + '-mask'));
