@@ -92,6 +92,9 @@ Modal.prototype.initDom_ = function() {
   var createDom = dom.createDom;
   var el = createDom('div', this.config.className);
   var closeEl = createDom('div', this.config.className + '-x');
+  closeEl.setAttribute('aria-label', 'Close');
+  closeEl.setAttribute('role', 'button');
+  closeEl.setAttribute('tabindex', '0');
   el.appendChild(closeEl);
   el.appendChild(createDom('div', this.config.className + '-mask'));
   var contentContainerEl = createDom('div', this.config.className + '-content')
