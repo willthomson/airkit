@@ -63,6 +63,7 @@ function trackScroll(cb, opt_config) {
 
   var scrollDepthCaller = new ScrollDepthCaller(cb, null, config);
   scrolldelegator.addDelegate(scrollDepthCaller);
+  scrolldelegator.start();
 }
 
 
@@ -74,6 +75,7 @@ function trackElements(cb, opt_config) {
 
   var scrollDepthCaller = new ScrollDepthCaller(null, cb, config);
   scrolldelegator.addDelegate(scrollDepthCaller);
+  scrolldelegator.start();
 }
 
 
