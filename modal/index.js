@@ -62,8 +62,22 @@ Modal.prototype.hideModalElements_ = function() {
 };
 
 
+/**
+ * Gets the first hash value in a string.
+ * For example #modal-id#deep-link-within-modal. In this event, return the
+ * first hash.
+ */
+Modal.prototype.getFirstHash_ = function(hash) {
+  if (hash.includes('#')) {
+    hash = hash.split('#')[0];
+  }
+  return hash;
+}
+
+
 Modal.prototype.initStateFromHash_ = function() {
-  var idFromHash = window.location.hash.substr(1);
+  var idFromHash = this.getFirstHash_(window.location.hash.substr(1));
+
   if (this.isValidModalId_(idFromHash)) {
     this.setActive_(true, idFromHash, false);
   }
