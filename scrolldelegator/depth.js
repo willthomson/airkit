@@ -14,7 +14,7 @@ var defaultConfig = {
 };
 
 
-ScrollDepthCaller = function(scrollCallback, elementsCallback, config) {
+var ScrollDepthCaller = function(scrollCallback, elementsCallback, config) {
   this.querySelector = config.querySelector;
   this.visitedAttributeName = config.visitedAttributeName;
   this.scrollCallback = scrollCallback;
