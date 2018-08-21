@@ -12,6 +12,7 @@ var useragent = require('../utils/useragent');
 
 var modalInstance = null;
 var defaultConfig = {
+  addCloseButtonToDocument: false,
   className: 'ak-modal',
   history: true,
   historyNamePrefix: '',
@@ -109,7 +110,11 @@ Modal.prototype.initDom_ = function() {
   closeEl.setAttribute('aria-label', 'Close');
   closeEl.setAttribute('role', 'button');
   closeEl.setAttribute('tabindex', '0');
-  el.appendChild(closeEl);
+  if (this.config.addCloseButtonToDocument) {
+    document.documentElement.appendChild(closeEl);
+  } else {
+    el.appendChild(closeEl);
+  }
   el.appendChild(createDom('div', this.config.className + '-mask'));
   var contentContainerEl = createDom('div', this.config.className + '-content')
   el.appendChild(contentContainerEl);
