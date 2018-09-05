@@ -49,7 +49,7 @@ function YouTubeModal(config) {
     var startDataAttribute = 'data-' + this.config.className + '-video-start-seconds';
     var startTime = +targetEl.getAttribute(startDataAttribute);
     if (videoId) {
-      this.play(videoId, false, startTime);
+      this.play(videoId, true /* opt_updateState */, startTime);
     }
   }.bind(this);
 
