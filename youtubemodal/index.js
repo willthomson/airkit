@@ -45,7 +45,7 @@ function YouTubeModal(config) {
   this.lastActiveVideoId_ = null;
   this.scrollY = 0;
 
-  var func = function(targetEl) {
+  this.delegatedListener_ = function(targetEl) {
     var data = 'data-' + this.config.className + '-video-id';
     var videoId = targetEl.getAttribute(data);
     var startDataAttribute = 'data-' + this.config.className + '-video-start-seconds';
@@ -56,7 +56,7 @@ function YouTubeModal(config) {
   }.bind(this);
 
   // Loads YouTube iframe API.
-  events.addDelegatedListener(document, 'click', func);
+  events.addDelegatedListener(document, 'click', this.delegatedListener_);
   var tag = document.createElement('script');
   tag.setAttribute('src', 'https://www.youtube.com/iframe_api');
   this.parentElement.appendChild(tag);
@@ -93,6 +93,7 @@ YouTubeModal.prototype.dispose = function() {
   if (this.config.history) {
     window.removeEventListener('popstate', this.popstateListener_);
   }
+  events.removeDelegatedListener(document, 'click', this.delegatedListener_);
 };
 
 /**
@@ -171,11 +172,11 @@ YouTubeModal.prototype.setActive_ = function(active, opt_videoId, opt_updateStat
       return;
     }
     window.history.pushState(
-        {'videoId': videoId}, '',
-        '#' + this.config.historyNamePrefix + videoId);
+      {'videoId': videoId}, '',
+      '#' + this.config.historyNamePrefix + videoId);
   } else {
     window.history.pushState(
-        {'videoId': null}, '', window.location.pathname);
+      {'videoId': null}, '', window.location.pathname);
   }
 };
 
@@ -202,8 +203,8 @@ YouTubeModal.prototype.onHistoryChange_ = function(e) {
  */
 YouTubeModal.prototype.play = function(videoId, opt_updateState, opt_startTime) {
   var useHandler = (
-      this.config.useHandlerOnMobile
-      && (useragent.isIOS() || useragent.isAndroid()));
+    this.config.useHandlerOnMobile
+    && (useragent.isIOS() || useragent.isAndroid()));
 
   if (useHandler) {
     var url = 'https://m.youtube.com/watch?v=' + videoId;
@@ -234,7 +235,7 @@ YouTubeModal.prototype.play = function(videoId, opt_updateState, opt_startTime) 
   };
   player = new YT.Player(playerEl, options);
   this.activeVideoId_ = videoId;
-}
+};
 
 
 /**
