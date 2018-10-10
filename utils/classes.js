@@ -7,8 +7,12 @@
  * Removes a list of classes and adds new ones.
  */
 function removeAdd(el, classesToRemove, classesToAdd) {
-  el.classList.remove.apply(el.classList, classesToRemove);
-  el.classList.add.apply(el.classList, classesToAdd);
+  classesToRemove.forEach(function(className) {
+    el.classList.remove(className);
+  });
+  classesToAdd.forEach(function(className) {
+    el.classList.add(className);
+  });
 }
 
 
