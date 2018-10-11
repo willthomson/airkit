@@ -93,7 +93,6 @@ YouTubeModal.prototype.dispose = function() {
   if (this.config.history) {
     window.removeEventListener('popstate', this.popstateListener_);
   }
-  events.removeDelegatedListener(document, 'click', this.delegatedListener_);
 };
 
 /**
