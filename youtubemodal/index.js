@@ -44,6 +44,8 @@ function YouTubeModal(config) {
   this.initDom_();
   this.lastActiveVideoId_ = null;
   this.scrollY = 0;
+  this.el_ = null;
+  this.closeEl_ = null;
 
   this.delegatedListener_ = function(targetEl) {
     var data = 'data-' + this.config.className + '-video-id';
@@ -57,9 +59,15 @@ function YouTubeModal(config) {
 
   // Loads YouTube iframe API.
   events.addDelegatedListener(document, 'click', this.delegatedListener_);
-  var tag = document.createElement('script');
-  tag.setAttribute('src', 'https://www.youtube.com/iframe_api');
-  this.parentElement.appendChild(tag);
+
+  // Only add the script tag if it doesn't exist
+  var scriptTag =
+    document.querySelector('script[src="https://www.youtube.com/iframe_api"]');
+  if (!scriptTag) {
+    var tag = document.createElement('script');
+    tag.setAttribute('src', 'https://www.youtube.com/iframe_api');
+    this.parentElement.appendChild(tag);
+  }
 }
 
 
@@ -69,16 +77,16 @@ function YouTubeModal(config) {
  */
 YouTubeModal.prototype.initDom_ = function() {
   var createDom = dom.createDom;
-  var el = createDom('div', this.config.className);
-  var closeEl = createDom('div', this.config.className + '-x');
-  closeEl.setAttribute('aria-label', 'Close video player');
-  closeEl.setAttribute('role', 'button');
-  closeEl.setAttribute('tabindex', '0');
-  el.appendChild(closeEl);
-  el.appendChild(createDom('div', this.config.className + '-player'));
-  el.appendChild(createDom('div', this.config.className + '-mask'));
-  this.parentElement.appendChild(el);
-  closeEl.addEventListener('click', this.closeEventListener_);
+  this.el_ = createDom('div', this.config.className);
+  this.closeEl_ = createDom('div', this.config.className + '-x');
+  this.closeEl_.setAttribute('aria-label', 'Close video player');
+  this.closeEl_.setAttribute('role', 'button');
+  this.closeEl_.setAttribute('tabindex', '0');
+  this.el_.appendChild(this.closeEl_);
+  this.el_.appendChild(createDom('div', this.config.className + '-player'));
+  this.el_.appendChild(createDom('div', this.config.className + '-mask'));
+  this.parentElement.appendChild(this.el_);
+  this.closeEl_.addEventListener('click', this.closeEventListener_);
 
   if (this.config.history) {
     window.addEventListener('popstate', this.popstateListener_);
@@ -86,10 +94,9 @@ YouTubeModal.prototype.initDom_ = function() {
 };
 
 YouTubeModal.prototype.dispose = function() {
-  var el = document.querySelector('.' + this.config.className);
-  var closeEl = document.querySelector('.' + this.config.className + '-x');
-  closeEl.removeEventListener('click', this.closeEventListener_);
-  this.parentElement.removeChild(el);
+  this.closeEl_.removeEventListener('click', this.closeEventListener_);
+  this.parentElement.removeChild(this.el_);
+  events.removeDelegatedListener(document, 'click', this.delegatedListener_);
   if (this.config.history) {
     window.removeEventListener('popstate', this.popstateListener_);
   }
