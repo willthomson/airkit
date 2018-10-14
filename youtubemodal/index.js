@@ -41,11 +41,11 @@ function YouTubeModal(config) {
   this.parentElement = document.querySelector(this.config.parentSelector);
   this.closeEventListener_ = this.setActive_.bind(this, false);
   this.popstateListener_ = this.onHistoryChange_.bind(this);
+  this.el_ = null;
+  this.closeEl_ = null;
   this.initDom_();
   this.lastActiveVideoId_ = null;
   this.scrollY = 0;
-  this.el_ = null;
-  this.closeEl_ = null;
 
   this.delegatedListener_ = function(targetEl) {
     var data = 'data-' + this.config.className + '-video-id';
