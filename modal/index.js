@@ -31,13 +31,16 @@ function Modal(config) {
   this.config = config;
   this.timers_ = [];
   this.scrollY = 0;
+  this.closeEl_ = null;
+  this.el_ = null;
+  this.popstateListener_ = this.onHistoryChange_.bind(this);
 
   this.initDom_();
 
   var closeAttribute = 'data-' + this.config.className + '-x';
   var closeClass = this.config.className + '-x';
   var data = 'data-' + this.config.className + '-id';
-  var func = function(targetEl, e) {
+  this.delegatedListener_ = function(targetEl, e) {
     var modalId = targetEl.getAttribute(data);
     if (modalId) {
       e.preventDefault();
@@ -48,7 +51,7 @@ function Modal(config) {
       this.setActive_(false);
     }
   }.bind(this);
-  events.addDelegatedListener(document, 'click', func);
+  events.addDelegatedListener(document, 'click', this.delegatedListener_);
 
   this.initStateFromHash_();
 }
@@ -105,28 +108,42 @@ Modal.prototype.isValidModalId_ = function(modalId) {
  */
 Modal.prototype.initDom_ = function() {
   var createDom = dom.createDom;
-  var el = createDom('div', this.config.className);
-  var closeEl = createDom('div', this.config.className + '-x');
-  closeEl.setAttribute('aria-label', 'Close');
-  closeEl.setAttribute('role', 'button');
-  closeEl.setAttribute('tabindex', '0');
+  this.el_ = createDom('div', this.config.className);
+  this.closeEl_ = createDom('div', this.config.className + '-x');
+  this.closeEl_.setAttribute('aria-label', 'Close');
+  this.closeEl_.setAttribute('role', 'button');
+  this.closeEl_.setAttribute('tabindex', '0');
   if (this.config.addCloseButtonToDocument) {
-    document.documentElement.appendChild(closeEl);
+    document.documentElement.appendChild(this.closeEl_);
   } else {
-    el.appendChild(closeEl);
+    this.el_.appendChild(this.closeEl_);
   }
-  el.appendChild(createDom('div', this.config.className + '-mask'));
+  this.el_.appendChild(createDom('div', this.config.className + '-mask'));
   var contentContainerEl = createDom('div', this.config.className + '-content')
-  el.appendChild(contentContainerEl);
-  document.body.appendChild(el);
+  this.el_.appendChild(contentContainerEl);
+  document.body.appendChild(this.el_);
 
   this.contentContainerEl = contentContainerEl;
 
   if (this.config.history) {
-    window.addEventListener('popstate', this.onHistoryChange_.bind(this));
+    window.addEventListener('popstate', this.popstateListener_);
   }
 };
 
+
+/**
+ * Undo changes made by the modal initializing
+ */
+Modal.prototype.dispose = function() {
+  document.body.removeChild(this.el_);
+  if (this.config.addCloseButtonToDocument) {
+    document.documentElement.removeChild(this.closeEl_);
+  }
+  events.removeDelegatedListener(document, 'click', this.delegatedListener_);
+  if (this.config.history) {
+    window.removeEventListener('popstate', this.popstateListener_);
+  }
+};
 
 /**
  * Sets the modal's visibility.
@@ -278,7 +295,6 @@ Modal.prototype.onHistoryChange_ = function(e) {
   this.setActive_(Boolean(activeId), activeId, false);
 };
 
-
 /**
  * Initializes a modal dialog singleton.
  * @param {Object=} opt_config Config options.
@@ -310,9 +326,20 @@ function close() {
   modalInstance && modalInstance.setActive_(false, null, true);
 }
 
+/**
+ * Disposes of the modal
+ */
+function dispose() {
+  if (!modalInstance) {
+    return;
+  }
+  modalInstance.dispose();
+  modalInstance = null;
+}
 
 module.exports = {
   init: init,
+  dispose: dispose,
   openById: openById,
   close: close,
   Modal: Modal
