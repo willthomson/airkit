@@ -32,7 +32,7 @@ function Modal(config) {
   this.timers_ = [];
   this.scrollY = 0;
   this.closeEl_ = null;
-  this.el_ = null;
+  this.modalElement_ = null;
   this.popstateListener_ = this.onHistoryChange_.bind(this);
 
   this.initDom_();
@@ -108,7 +108,7 @@ Modal.prototype.isValidModalId_ = function(modalId) {
  */
 Modal.prototype.initDom_ = function() {
   var createDom = dom.createDom;
-  this.el_ = createDom('div', this.config.className);
+  this.modalElement_ = createDom('div', this.config.className);
   this.closeEl_ = createDom('div', this.config.className + '-x');
   this.closeEl_.setAttribute('aria-label', 'Close');
   this.closeEl_.setAttribute('role', 'button');
@@ -116,12 +116,12 @@ Modal.prototype.initDom_ = function() {
   if (this.config.addCloseButtonToDocument) {
     document.documentElement.appendChild(this.closeEl_);
   } else {
-    this.el_.appendChild(this.closeEl_);
+    this.modalElement_.appendChild(this.closeEl_);
   }
-  this.el_.appendChild(createDom('div', this.config.className + '-mask'));
+  this.modalElement_.appendChild(createDom('div', this.config.className + '-mask'));
   var contentContainerEl = createDom('div', this.config.className + '-content')
-  this.el_.appendChild(contentContainerEl);
-  document.body.appendChild(this.el_);
+  this.modalElement_.appendChild(contentContainerEl);
+  document.body.appendChild(this.modalElement_);
 
   this.contentContainerEl = contentContainerEl;
 
@@ -135,7 +135,7 @@ Modal.prototype.initDom_ = function() {
  * Undo changes made by the modal initializing
  */
 Modal.prototype.dispose = function() {
-  document.body.removeChild(this.el_);
+  document.body.removeChild(this.modalElement_);
   if (this.config.addCloseButtonToDocument) {
     document.documentElement.removeChild(this.closeEl_);
   }
@@ -163,29 +163,27 @@ Modal.prototype.setVisible = function(enabled) {
     document.body.removeEventListener('keydown', _keyToggle);
   }
 
-  var lightboxEl = document.querySelector('.' + this.config.className);
-
   var enterClass = this.config.className + '--enter';
   var exitClass = this.config.className + '--exit';
   window.setTimeout(function() {
     if (enabled) {
-      lightboxEl.classList.remove(exitClass);
-      lightboxEl.classList.add(enterClass);
+      this.modalElement_.classList.remove(exitClass);
+      this.modalElement_.classList.add(enterClass);
       this.scrollY = window.pageYOffset;
     } else {
-      lightboxEl.classList.remove(enterClass);
-      lightboxEl.classList.add(exitClass);
+      this.modalElement_.classList.remove(enterClass);
+      this.modalElement_.classList.add(exitClass);
       window.scrollTo(0, this.scrollY);
     }
   }, 0);
 
   var enableTimer = window.setTimeout(function() {
-    classes.enable(lightboxEl, this.config.className + '--enabled', enabled);
+    classes.enable(this.modalElement_, this.config.className + '--enabled', enabled);
   }.bind(this), enabled ? 0 : this.config.transitionDuration);
   this.timers_.push(enableTimer);
 
   var visibleTimer = window.setTimeout(function() {
-    classes.enable(lightboxEl, this.config.className + '--visible', enabled);
+    classes.enable(this.modalElement_, this.config.className + '--visible', enabled);
   }.bind(this), enabled ? this.config.visibilityDuration ||
     this.config.transitionDuration : 0);
   this.timers_.push(visibleTimer);
@@ -266,7 +264,7 @@ Modal.prototype.returnContentToOrigin_ = function() {
     var currentContentEl = this.contentContainerEl.querySelector('div');
     currentContentEl && originalContainer.appendChild(currentContentEl);
   }
-}
+};
 
 
 /**
