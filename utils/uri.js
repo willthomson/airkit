@@ -71,7 +71,7 @@ function updateParamsFromUrl(config) {
       var url = new URL(el.getAttribute(attr), location.href);
 
       var map = parseQueryMap(url.search);
-      for (key in vals) {
+      for (var key in vals) {
         map[key] = vals[key];
       }
       url.search = encodeQueryMap(map);
@@ -137,7 +137,7 @@ function parseQueryMap(query) {
  */
 function encodeQueryMap(map) {
   var params = [];
-  for (key in map) {
+  for (var key in map) {
     var value = map[key];
     params.push(key + '=' + urlEncode_(value));
   }
