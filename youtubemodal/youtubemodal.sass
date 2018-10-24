@@ -1,5 +1,6 @@
 $button-height: 50px !default
 $color-black: #000 !default
+$color-grey: #797979 !default
 $color-white: #fff !default
 
 .ak-youtubemodal
@@ -68,3 +69,21 @@ $color-white: #fff !default
     position: relative
     width: 100%
     z-index: 2002
+
+  &-attribution
+    bottom: 0
+    color: $color-grey
+    font-size: 12px
+    left: 0
+    line-height: 12px
+    max-width: 100%
+    padding: 0 30px 75px 30px
+    pointer-events: none
+    position: absolute
+    right: 0 
+    text-align: center
+    z-index: 2004
+
+    @media screen and (min-width: 768px)
+      padding: 50px
+      text-align: right
