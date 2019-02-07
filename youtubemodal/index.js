@@ -242,7 +242,7 @@ YouTubeModal.prototype.play = function(videoId, opt_updateState, opt_startTime, 
     return;
   }
   var playerEl = document.querySelector('.' + this.config.className + '-player');
-  let playerVars = objects.clone(this.config.playerVars);
+  var playerVars = objects.clone(this.config.playerVars);
   if (opt_startTime) {
     playerVars['start'] = opt_startTime;
   }
