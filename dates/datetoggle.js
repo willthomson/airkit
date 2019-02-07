@@ -37,7 +37,7 @@ DateToggle.prototype.processElement_ = function(el, now) {
   var start = startString ? new Date(startString) : null;
   var end = endString ? new Date(endString) : null;
   if (start && end) {
-    var enabled = now >= start && now <= end;
+    var enabled = now >= start && now < end;
   } else if (start) {
     var enabled = now >= start;
   } else if (end) {
