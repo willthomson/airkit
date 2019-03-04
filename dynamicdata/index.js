@@ -57,7 +57,7 @@ function get(userConfig) {
   var isProdFromParam = uri.getParameterValue(config.prodParameterName);
   var file = config['file'];
   var url = file['prod'];
-  if (!isProdFromParam && 'staging' in file) {
+  if (!isProdFromParam && 'staging' in file && file['staging']) {
     isProd = false;
     url = file['staging'];
   }
