@@ -89,3 +89,45 @@ Option | Default | Description
 parameterName | variation | Key of the query parameter to use to set the active variation.
 attributeName | data-ak-gcx | Attribute used to decorate variation elements.
 setVariationShown | true | Whether to automatically hide or show elements with an attribute matching `attributeName`. If `false`, then elements with the attribute `attributeName` will have their attribute set to the numerical ID of the active variation.
+
+### tracking
+
+Utility for automatically tracking interactions with elements based on various
+criteria.
+
+#### Sample usage
+
+JS
+
+```javascript
+var tracking = require('airkit/analytics/tracking');
+tracking.init(function(el, obj) {
+  let action = el.textContent.trim();
+  let data = {
+    eventCategory: obj.attrs.category || window.location.pathname,
+    eventAction: obj.attrs.action || action,
+    eventLabel: obj.attrs.label,
+  };
+  window.dataLayer.push(data);
+}, {
+  overlayEnabled: window.location.hostname != 'prod.com',
+});
+```
+
+HTML
+
+```html
+<!-- Tracked due to default <a> tag. -->
+<a href="#">Click here</a>
+
+<!-- Tracked due to default <button> tag. -->
+<button>Submit</button>
+
+<!-- Tracked due to data attributes. -->
+<div
+    data-ak-tracking-category="Custom category"
+    data-ak-tracking-action="Custom action"
+    data-ak-tracking-label="Custom label">
+  Click here
+</div>
+```
