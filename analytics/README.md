@@ -95,6 +95,12 @@ setVariationShown | true | Whether to automatically hide or show elements with a
 Utility for automatically tracking interactions with elements based on various
 criteria.
 
+The tracking snippets use the following conventions:
+
+- **Category**: The type of link (i.e. internal, outbound, generic; where "generic" is not a link and just a click on an element).
+- **Action**: The `href` value of the target element.
+- **Label**: The `textContent` (visible text) of the target element.
+
 #### Sample usage
 
 JS
@@ -102,11 +108,10 @@ JS
 ```javascript
 var tracking = require('airkit/analytics/tracking');
 tracking.init(function(el, obj) {
-  let action = el.textContent.trim();
-  let data = {
-    eventCategory: obj.attrs.category || window.location.pathname,
-    eventAction: obj.attrs.action || action,
-    eventLabel: obj.attrs.label,
+  var data = {
+    eventCategory: obj.attrs.category || obj.linkCategoryName,
+    eventAction: obj.attrs.action || obj.getAttribute('href'),
+    eventLabel: obj.attrs.label || obj.label,
   };
   window.dataLayer.push(data);
 }, {
@@ -130,4 +135,52 @@ HTML
     data-ak-tracking-label="Custom label">
   Click here
 </div>
+```
+
+#### Backwards compatibility with autotrack.js
+
+The following snippet provides backwards compatibility with `autotrack.js` with
+a few minor caveats.
+
+- **Event Category**: No changes.
+- **Event Action**: No changes (defaults to `href` attribute).
+- **Event Label**: No longer the pathname of the current page (this information was useless, and could be gleaned elsewhere in analytics. Now defaults to the `textContent` of the element.
+
+```javascript
+var tracking = require('airkit/analytics/tracking');
+tracking.init(function(el, obj) {
+  // Category.
+  var category = el.getAttribute('data-g-event');
+  if (!category) {
+    swtich (obj.linkCategory) {
+      case 'internal':
+        category = 'AutoTrack: Link Click';
+        break;
+      case 'outbound':
+        category = 'AutoTrack: Outbound Click';
+        break;
+      default:
+        category = 'AutoTrack: Element Click'
+    }
+  }
+  var action = el.getAttribute('data-g-action') || obj.getAttribute('href');
+  var label = el.getAttribute('data-g-label') || obj.label;
+  let data = {
+    eventCategory: category,
+    eventAction: action,
+    eventLabel: label,
+  };
+  if (window._gaq) {
+    window._gaq.push([
+      '_trackEvent',
+      data.eventCategory,
+      data.eventAction,
+      data.eventLabel
+    ]);
+  } else {
+    window.dataLayer.push(data);
+  }
+}, {
+  attributes: ['data-g-event', 'data-g-action', 'data-g-category']
+});
 ```

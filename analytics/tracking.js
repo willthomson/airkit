@@ -9,6 +9,7 @@ var uri = require('../utils/uri');
 
 
 var defaultConfig = {
+  attributes: [],
   attributePrefix: 'data-ak-tracking-',
   overlayEnabled: false,
   overlayParam: 'ak-tracking-help',
@@ -19,6 +20,9 @@ var defaultConfig = {
 var TrackingObject = function() {
   this.attrs = null;
   this.element = null;
+  this.label = null;
+  this.linkCategory = null;
+  this.linkCategoryName = null;
 };
 
 
@@ -32,6 +36,41 @@ var Tracker = function(cb, config) {
       && uri.getParameterValue(this.config.overlayParam)) {
     this.initOverlay_();
   }
+};
+
+
+Tracker.LinkCategory = {
+  BUTTON: 'button',
+  GENERIC: 'generic',
+  INTERNAL: 'internal',
+  OUTBOUND: 'outbound'
+};
+
+
+Tracker.prototype.getNameForLinkCategory = function(linkCategory) {
+  switch (linkCategory) {
+    case Tracker.LinkCategory.BUTTON:
+      return 'Auto: Button';
+    case Tracker.LinkCategory.GENERIC:
+      return 'Auto: Element';
+    case Tracker.LinkCategory.INTERNAL:
+      return 'Auto: Internal';
+    case Tracker.LinkCategory.OUTBOUND:
+      return 'Auto: Outbound';
+  }
+};
+
+
+Tracker.prototype.getLinkCategory_ = function(el) {
+  if (el.tagName.toLowerCase() == 'a') {
+    if (el.hostname == window.location.hostname) {
+      return Tracker.LinkCategory.INTERNAL;
+    }
+    return Tracker.LinkCategory.OUTBOUND;
+  } else if (el.tagName.toLowerCase() == 'button') {
+    return Tracker.LinkCategory.BUTTON;
+  }
+  return Tracker.LinkCategory.GENERIC;
 };
 
 
@@ -76,20 +115,38 @@ Tracker.prototype.initOverlay_ = function() {
 };
 
 
-Tracker.prototype.track_ = function(el) {
+Tracker.prototype.getLabel = function(el) {
+  return el.textContent.trim();
+};
+
+
+Tracker.prototype.getTrackingObject = function(el) {
   var obj = new TrackingObject();
   obj.attrs = this.parseAttrs_(el);
   obj.element = el;
+  obj.label = this.getLabel_(el);
+  obj.linkCategory = this.getLinkCategory_(el);
+  obj.linkCategoryName = this.getNameForLinkCategory_(obj.linkCategory);
+  return obj;
+};
+
+
+Tracker.prototype.track_ = function(el) {
+  var obj = this.getTrackingObject(el);
   this.cb(el, obj);
 };
 
 
 Tracker.prototype.shouldTrack_ = function(el) {
-  // Track if any of the attributes match the attribute prefix.
   for (var i = 0; i < el.attributes.length; i++) {
     var attr = el.attributes[i];
     var attrName = attr.name;
+    // Track if any of the attributes match the attribute prefix.
     if (attrName.indexOf(this.config.attributePrefix) > -1) {
+      return true;
+    }
+    // Track if any of the attributes match an explicit list of attributes.
+    if (this.config.attributes.indexOf(attrName) > -1) {
       return true;
     }
   }
@@ -123,3 +180,4 @@ function init(cb, opt_config) {
 
 module.exports = {
   init: init
+};
