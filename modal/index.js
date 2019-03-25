@@ -86,6 +86,10 @@ Modal.prototype.initStateFromHash_ = function() {
 
 
 Modal.prototype.isValidModalId_ = function(modalId) {
+  // Empty ids are not valid; prevent opening an arbitrary modal by default.
+  if (!modalId) {
+    return false;
+  }
   var modalEls = document.querySelectorAll(
       '[data-' + this.config.className + ']');
   var valid = false;
