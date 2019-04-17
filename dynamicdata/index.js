@@ -5,6 +5,7 @@ var uri = require('../utils/uri');
 
 var defaultConfig = {
   applyCacheBuster: true,
+  evergreen: false,
   nowParameterName: 'ak-now',
   prodParameterName: 'ak-dynamicdata-prod'
 };
@@ -33,13 +34,18 @@ function _xhr(url, cb) {
 /**
  * Normalizes staging data to become the same format as prod data.
  */
-function processStagingResp(resp, now) {
+function processStagingResp(resp, now, evergreen) {
   var keysToData = {};
   for (var key in resp) {
     [].forEach.call(resp[key], function(datedRow) {
       var start =  datedRow['start_date'] ? new Date(datedRow['start_date']) : null;
       var end = datedRow['end_date'] ? new Date(datedRow['end_date']) : null;
-      if (datetoggle.isEnabledNow(start, end, now)) {
+      if (evergreen) {
+        var isEnabled = datetoggle.isEnabledNow(start, null, now);
+      } else {
+        var isEnabled = datetoggle.isEnabledNow(start, end, now);
+      }
+      if (isEnabled) {
         keysToData[key] = datedRow;
       }
     });
@@ -55,6 +61,7 @@ function get(userConfig) {
   var now = dateFromParam ? new Date(dateFromParam) : new Date();
   var isProd = true;
   var isProdFromParam = uri.getParameterValue(config.prodParameterName);
+  var evergreen = config['evergreen'];
   var file = config['file'];
   var url = file['prod'];
   if (!isProdFromParam && 'staging' in file && file['staging']) {
@@ -67,7 +74,7 @@ function get(userConfig) {
   return new Promise(function(resolve, reject) {
     _xhr(url, function(resp) {
       if (!isProd) {
-        resp = processStagingResp(resp, now);
+        resp = processStagingResp(resp, now, evergreen);
       }
       resolve(resp);
     });
