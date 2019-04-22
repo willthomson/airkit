@@ -13,7 +13,8 @@ function getParameterValue(key, opt_uri) {
   key = key.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
   var regex = new RegExp('[\\?&]' + key + '=([^&#]*)');
   var results = regex.exec(uri);
-  return results === null ? null : results[1];
+  var result = results === null ? null : results[1];
+  return result ? urlDecode_(result) : null;
 }
 
 
