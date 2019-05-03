@@ -26,6 +26,19 @@ sheet). In `prod`, only the currently active promo would be rendered. In
 `staging`, the user could use a query parameter (`?ak-now=2019/04/16` for
 example) to render the content and preview it at different stages.
 
+#### Query parameter format
+
+In staging, query parameters may be used to alter the current time to see the
+results as if it were a different point in time.
+
+```
+Starts at midnight.
+?ak-now=2019/04/06
+
+Starts at 12pm.
+?ak-now=2019/04/06/12:00:00
+```
+
 #### Sample usage
 
 ```markdown
