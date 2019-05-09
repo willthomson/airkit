@@ -34,10 +34,15 @@ function _xhr(url, cb) {
 /**
  * Normalizes staging data to become the same format as prod data.
  */
-function processStagingResp(resp, now, evergreen) {
+function processStagingResp(resp, now, evergreen, opt_locale) {
   var keysToData = {};
   for (var key in resp) {
     [].forEach.call(resp[key], function(datedRow) {
+      if (opt_locale) {
+        if (opt_locale.toLowerCase() != datedRow['locale'].toLowerCase()) {
+          return;
+        }
+      }
       var start =  datedRow['start_date'] ? new Date(datedRow['start_date']) : null;
       var end = datedRow['end_date'] ? new Date(datedRow['end_date']) : null;
       if (evergreen) {
@@ -54,7 +59,7 @@ function processStagingResp(resp, now, evergreen) {
 }
 
 
-function get(userConfig) {
+function get(userConfig, opt_locale) {
   var config = objects.clone(defaultConfig);
   objects.merge(config, userConfig);
   var dateFromParam = uri.getParameterValue(config.nowParameterName);
@@ -74,7 +79,7 @@ function get(userConfig) {
   return new Promise(function(resolve, reject) {
     _xhr(url, function(resp) {
       if (!isProd) {
-        resp = processStagingResp(resp, now, evergreen);
+        resp = processStagingResp(resp, now, evergreen, opt_locale);
       }
       resolve(resp);
     });
