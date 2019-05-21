@@ -76,6 +76,9 @@ function get(userConfig, opt_locale) {
   if (config.applyCacheBuster) {
     url = url + '?cb=' + _cacheBuster;
   }
+  if (opt_locale) {
+    url = url.replace('{locale}', opt_locale);
+  }
   return new Promise(function(resolve, reject) {
     _xhr(url, function(resp) {
       if (!isProd) {
