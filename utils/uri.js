@@ -22,7 +22,7 @@ var UpdateParamsFromUrlDefaultConfig = {
   serializeAttr: 'data-ak-update-params-serialize-into-key',
   selector: 'a.ak-update-params[href]',
   attr: 'href',
-  params: null,  // required
+  params: null,
 };
 
 
@@ -32,7 +32,7 @@ var UpdateParamsFromUrlDefaultConfig = {
  *     selector: CSS query selector of elements to act upon.
  *     attr: The element attribute to update.
  *     params: A list of URL params (string or RegExp) to set on the element
- *         attr from the current URL.
+ *         attr from the current URL. If params is empty, all params are propagated.
  */
 function updateParamsFromUrl(config) {
   // If there is no query string in the URL, then there's nothing to do in this
@@ -46,12 +46,13 @@ function updateParamsFromUrl(config) {
   var selector = c.selector;
   var attr = c.attr;
   var params = c.params;
-  if (!params) {
-    throw '`params` is required';
-  }
-
   var vals = {};
+
   parseQueryString(location.search, function(key, value) {
+    if (!params) {
+      vals[key] = value;
+      return;
+    }
     for (var i = 0; i < params.length; i++) {
       var param = params[i];
       if (param instanceof RegExp) {
