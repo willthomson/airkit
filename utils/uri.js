@@ -18,6 +18,23 @@ function getParameterValue(key, opt_uri) {
 }
 
 
+/**
+ * Returns a map of keys to values from a query string. Compatible with empty
+ * values.
+ */
+function getParameters(opt_queryString) {
+  return parseQueryMap(opt_queryString || window.location.search);
+}
+
+
+/**
+ * Returns whether a parameter key is present in a query string.
+ */
+function hasParameter(key, opt_queryString) {
+  return key in getParameters(opt_queryString);
+}
+
+
 var UpdateParamsFromUrlDefaultConfig = {
   serializeAttr: 'data-ak-update-params-serialize-into-key',
   selector: 'a.ak-update-params[href]',
@@ -171,6 +188,8 @@ function urlEncode_(str) {
 module.exports = {
   encodeQueryMap: encodeQueryMap,
   getParameterValue: getParameterValue,
+  hasParameter: hasParameter,
+  getParameters: getParameters,
   parseQueryMap: parseQueryMap,
   parseQueryString: parseQueryString,
   updateParamsFromUrl: updateParamsFromUrl
