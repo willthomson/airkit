@@ -100,12 +100,13 @@ function updateParamsFromUrl(config) {
       if (serializeIntoKey) {
         var serializedQueryString = encodeQueryMap(vals);
         map[serializeIntoKey] = serializedQueryString;
+        url.search = encodeQueryMap(map);
       } else {
         for (var key in vals) {
           map[key] = vals[key];
         }
+        url.search = urlDecode_(encodeQueryMap(map));
       }
-      url.search = encodeQueryMap(map);
       el.setAttribute(attr, url.toString());
     }
   }
