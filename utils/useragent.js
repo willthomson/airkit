@@ -19,7 +19,7 @@ function isAndroid() {
 
 
 function isChrome() {
-  return navigator.userAgent.indexOf('Chrome') != -1;
+  return navigator.userAgent.indexOf('Chrome') != -1 && !isEdge();
 }
 
 
@@ -38,6 +38,11 @@ function isIE() {
 }
 
 
+function isEdge() {
+  return navigator.userAgent.indexOf('Edge') != -1;
+}
+
+
 function isIEorEdge() {
   return /Edge\/\d+/.test(navigator.userAgent) ||
       /MSIE\/\d+/.test(navigator.userAgent) ||
@@ -48,6 +53,7 @@ function isIEorEdge() {
 module.exports = {
   isAndroid: isAndroid,
   isChrome: isChrome,
+  isEdge: isEdge,
   isFirefox: isFirefox,
   isIOS: isIOS,
   isIE: isIE,
