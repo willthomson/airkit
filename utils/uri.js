@@ -105,7 +105,7 @@ function updateParamsFromUrl(config) {
         for (var key in vals) {
           map[key] = vals[key];
         }
-        url.search = urlDecode_(encodeQueryMap(map));
+        url.search = encodeQueryMap(map);
       }
       el.setAttribute(attr, url.toString());
     }
