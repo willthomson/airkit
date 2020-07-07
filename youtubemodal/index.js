@@ -246,6 +246,7 @@ YouTubeModal.prototype.play = function(videoId, opt_updateState, opt_startTime, 
   if (opt_startTime) {
     playerVars['start'] = opt_startTime;
   }
+  playerVars['origin'] = location.protocol + '//' + location.host;
 
   var options = {
     'videoId': videoId,
