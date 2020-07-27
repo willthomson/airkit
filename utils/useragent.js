@@ -9,13 +9,7 @@ function isMobile() {
 
 
 function isIOS() {
-  return /iPhone|iPad|iPod/i.test(navigator.userAgent) || isIPad();
-}
-
-
-function isIPad() {
-  return (navigator.userAgent.toLowerCase().indexOf('macintosh') !== -1
-      && navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
 
@@ -56,7 +50,6 @@ module.exports = {
   isChrome: isChrome,
   isFirefox: isFirefox,
   isIOS: isIOS,
-  isIPad: isIPad,
   isIE: isIE,
   isIEorEdge: isIEorEdge,
   isMobile: isMobile,
