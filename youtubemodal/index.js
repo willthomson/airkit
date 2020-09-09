@@ -169,7 +169,9 @@ YouTubeModal.prototype.setActive_ = function(active, opt_videoId, opt_updateStat
     // Set the focus to the modal element. Store the most recent focused element
     // to restore focus back to the page when closed.
     this.lastFocusedEl_ = document.activeElement;
-    this.el_.focus();
+    // Focus on the "close" button since it's the only focusable element in the
+    // modal.
+    this.closeEl_.focus();
   } else {
     this.config.onModalClose && this.config.onModalClose(this.lastActiveVideoId_);
     window.scrollTo(0, this.scrollY);
