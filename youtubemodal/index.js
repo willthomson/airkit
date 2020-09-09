@@ -47,6 +47,7 @@ function YouTubeModal(config) {
   this.initDom_();
   this.lastActiveVideoId_ = null;
   this.scrollY = 0;
+  this.lastFocusedEl_ = null;
 
   this.delegatedListener_ = function(targetEl) {
     var data = 'data-' + this.config.className + '-video-id';
@@ -163,9 +164,20 @@ YouTubeModal.prototype.setActive_ = function(active, opt_videoId, opt_updateStat
   if (active) {
     this.config.onModalOpen && this.config.onModalOpen(this.lastActiveVideoId_);
     this.scrollY = window.pageYOffset;
+
+    // Set the focus to the modal element. Store the most recent focused element
+    // to restore focus back to the page when closed.
+    this.lastFocusedEl_ = document.activeElement;
+    this.el_.focus();
   } else {
     this.config.onModalClose && this.config.onModalClose(this.lastActiveVideoId_);
     window.scrollTo(0, this.scrollY);
+
+    // Restore focus to the element that was active prior to the modal being opened.
+    if (this.lastFocusedEl_) {
+      this.lastFocusedEl_.focus();
+      this.lastFocusedEl_ = null;
+    }
   }
   if (!this.config.history) {
     this.setVisible(active);
