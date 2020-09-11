@@ -128,9 +128,15 @@ YouTubeModal.prototype.setVisible = function(enabled) {
   }
 
   var _keyToggle = function(e) {
-    if (e.keyCode == 27) {
+    if (e.keyCode === 27 /* esc */) {
       this.setActive_(false);
       document.body.removeEventListener('keydown', _keyToggle);
+    } else if (e.keyCode === 32 /* space */) {
+      if (player.getPlayerState() === 1 /* playing */) {
+        player.pauseVideo();
+      } else {
+        player.playVideo();
+      }
     }
   }.bind(this);
 
