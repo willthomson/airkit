@@ -115,12 +115,19 @@ YouTubeModal.prototype.dispose = function() {
  * @param {boolean} enabled Whether the modal should be visible.
  */
 YouTubeModal.prototype.setVisible = function(enabled) {
+  var closeEl = this.closeEl_;
+  var transitionDuration = this.config.transitionDuration;
   // Plays or pauses depending on visibility.
   if (player) {
     // Delay call to give player time to load.
     window.setTimeout(function() {
       if (enabled) {
         player.playVideo();
+        window.setTimeout(
+            function() {
+              closeEl.focus();
+            },
+            transitionDuration);
       } else {
         player.pauseVideo();
       }
@@ -136,6 +143,7 @@ YouTubeModal.prototype.setVisible = function(enabled) {
         player.pauseVideo();
       } else {
         player.playVideo();
+        closeEl.focus();
       }
     }
   }.bind(this);
@@ -154,7 +162,6 @@ YouTubeModal.prototype.setVisible = function(enabled) {
     classes.enable(lightboxEl, this.config.className + '--visible', enabled);
   }.bind(this), enabled ? this.config.transitionDuration : 0);
 };
-
 
 /**
  * Sets whether the modal is active (and thus visible and playing). Handles history state if applicable.
@@ -177,15 +184,25 @@ YouTubeModal.prototype.setActive_ = function(active, opt_videoId, opt_updateStat
     this.lastFocusedEl_ = document.activeElement;
     // Focus on the "close" button since it's the only focusable element in the
     // modal.
-    this.closeEl_.focus();
+    var closeEl = this.closeEl_;
+    window.setTimeout(
+        function() {
+          closeEl.focus();
+        },
+        this.config.transitionDuration + 10);
   } else {
     this.config.onModalClose && this.config.onModalClose(this.lastActiveVideoId_);
     window.scrollTo(0, this.scrollY);
 
     // Restore focus to the element that was active prior to the modal being opened.
     if (this.lastFocusedEl_) {
-      this.lastFocusedEl_.focus();
-      this.lastFocusedEl_ = null;
+      var lastFocusedEl = this.lastFocusedEl_;
+      window.setTimeout(
+          function() {
+            lastFocusedEl.focus();
+            lastFocusedEl = null;
+          },
+          this.config.transitionDuration + 10);
     }
   }
   if (!this.config.history) {
@@ -270,12 +287,14 @@ YouTubeModal.prototype.play = function(videoId, opt_updateState, opt_startTime, 
   }
   playerVars['origin'] = location.protocol + '//' + location.host;
 
+  var closeEl = this.closeEl_;
   var options = {
     'videoId': videoId,
     'playerVars': playerVars,
     'events': {
       // Need to do this to force autoplay on mobile
       'onReady': function(event) {
+        closeEl.focus();
         event.target.playVideo();
       },
     },
