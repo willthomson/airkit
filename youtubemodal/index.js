@@ -276,7 +276,11 @@ YouTubeModal.prototype.play = function(videoId, opt_updateState, opt_startTime, 
   if (player && videoId == this.activeVideoId_) {
     return;
   } else if (player && videoId != this.activeVideoId_) {
-    player.loadVideoById(videoId, 0, 'large');
+    var startTime = 0;
+    if (opt_startTime) {
+      startTime = opt_startTime;
+    }
+    player.loadVideoById(videoId, startTime, 'large');
     this.activeVideoId_ = videoId;
     return;
   }
